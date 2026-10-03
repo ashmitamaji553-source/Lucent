@@ -90,6 +90,17 @@ export const apiClient = {
 
   // Study Plan
   async getPlan(): Promise<{
+    summary?: string;
+    days?: Array<{
+      date: string;
+      totalMinutes: number;
+      sessions: Array<{
+        subject: string;
+        topic: string;
+        duration: number;
+        type: 'Learn' | 'Practice' | 'Revision';
+      }>;
+    }>;
     todayTasks: StudyPlanItem[];
     upcomingTasks: StudyPlanItem[];
     focusAreas: string[];
@@ -97,6 +108,33 @@ export const apiClient = {
     conflicts: Conflict[];
   }> {
     const res = await fetch('/api/plan');
+    return res.json();
+  },
+
+  async createPlan(input: {
+    examDate?: string;
+    hoursPerDay?: number;
+    subjects?: string[];
+    topics?: any[];
+    confidence?: Record<string, string>;
+  }): Promise<{
+    summary: string;
+    days: Array<{
+      date: string;
+      totalMinutes: number;
+      sessions: Array<{
+        subject: string;
+        topic: string;
+        duration: number;
+        type: 'Learn' | 'Practice' | 'Revision';
+      }>;
+    }>;
+  }> {
+    const res = await fetch('/api/plan', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(input),
+    });
     return res.json();
   },
 
@@ -110,8 +148,12 @@ export const apiClient = {
     return data.item;
   },
 
-  async regeneratePlan(): Promise<any> {
-    const res = await fetch('/api/plan', { method: 'POST' });
+  async regeneratePlan(input?: any): Promise<any> {
+    const res = await fetch('/api/plan', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(input || {}),
+    });
     return res.json();
   },
 

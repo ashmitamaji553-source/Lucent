@@ -221,3 +221,234 @@
   .heading { font-size: 30px; }
   .sidebar { flex-direction: column; gap: 20px; }
 }
+
+/* AI Summary banner */
+.summaryBanner {
+  background: var(--paper);
+  border: 1px solid var(--sand);
+  border-left: 3px solid var(--blush);
+  padding: 16px 20px;
+  margin-bottom: 28px;
+  border-radius: var(--r-sm);
+}
+
+.summaryLabel {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: var(--terracotta);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.summaryText {
+  font-size: 14.5px;
+  color: var(--ink);
+  line-height: 1.5;
+  font-family: var(--serif);
+  font-style: italic;
+}
+
+/* Loading State: "Building your plan..." */
+.loadingContainer {
+  padding: 64px 24px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  border: 1px dashed var(--sand);
+  border-radius: var(--r-md);
+  background: var(--paper);
+  margin-bottom: 32px;
+}
+
+.loadingSpinner {
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--sand);
+  border-top-color: var(--blush);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loadingText {
+  font-family: var(--serif);
+  font-size: 22px;
+  color: var(--ink);
+  font-style: italic;
+}
+
+.loadingSub {
+  font-size: 13px;
+  color: var(--stone);
+}
+
+/* Setup Form */
+.setupCard {
+  background: var(--paper);
+  border: 1px solid var(--sand);
+  border-radius: var(--r-md);
+  padding: 24px 28px;
+  margin-bottom: 32px;
+}
+
+.setupTitle {
+  font-family: var(--serif);
+  font-size: 20px;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+
+.setupDesc {
+  font-size: 13px;
+  color: var(--stone);
+  margin-bottom: 20px;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.inputLabel {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--clay);
+  text-transform: uppercase;
+}
+
+.formInput {
+  background: #fff;
+  border: 1px solid var(--sand);
+  border-radius: var(--r-sm);
+  padding: 8px 12px;
+  font-size: 13.5px;
+  color: var(--ink);
+  outline: none;
+  font-family: var(--sans);
+}
+
+.formInput:focus {
+  border-color: var(--ink);
+}
+
+.topicRowItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(212, 197, 187, 0.4);
+}
+
+.topicName {
+  font-size: 13.5px;
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.confSelector {
+  display: flex;
+  gap: 4px;
+}
+
+.confBtn {
+  border: 1px solid var(--sand);
+  background: #fff;
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  color: var(--stone);
+  transition: all 0.15s;
+}
+
+.confBtnActiveLow {
+  background: var(--rose);
+  color: #fff;
+  border-color: var(--rose);
+}
+
+.confBtnActiveMedium {
+  background: var(--honey);
+  color: #fff;
+  border-color: var(--honey);
+}
+
+.confBtnActiveHigh {
+  background: var(--sage);
+  color: #fff;
+  border-color: var(--sage);
+}
+
+.actionRow {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.primaryBtn {
+  background: var(--ink);
+  color: #FAF7F2;
+  border: none;
+  border-radius: var(--r-sm);
+  padding: 9px 18px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.primaryBtn:hover {
+  opacity: 0.9;
+}
+
+.secondaryBtn {
+  background: transparent;
+  color: var(--clay);
+  border: 1px solid var(--sand);
+  border-radius: var(--r-sm);
+  padding: 8px 16px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+/* Activity Badge */
+.activityBadge {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  padding: 2px 7px;
+  border-radius: var(--r-sm);
+  text-transform: uppercase;
+}
+
+.activityLearn {
+  background: rgba(168, 88, 96, 0.12);
+  color: var(--rose);
+}
+
+.activityPractice {
+  background: rgba(184, 146, 74, 0.12);
+  color: var(--honey);
+}
+
+.activityRevision {
+  background: rgba(122, 145, 117, 0.12);
+  color: var(--sage);
+}
