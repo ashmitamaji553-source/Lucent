@@ -66,6 +66,20 @@
 
   /* Restrained shadows — no generic blurry glow */
   --shadow-subtle: 0 1px 3px rgba(36, 25, 21, 0.04), 0 4px 12px rgba(36, 25, 21, 0.02);
+
+  /* Text Shadows & Atmospheric Depth */
+  --ts-heading:       0 2px 4px rgba(24, 13, 17, 0.12), 0 8px 24px rgba(24, 13, 17, 0.08), 0 1px 1px rgba(255, 255, 255, 0.85);
+  --ts-title:         0 1px 3px rgba(24, 13, 17, 0.14), 0 4px 12px rgba(24, 13, 17, 0.06);
+  --ts-stat:          0 2px 6px rgba(24, 13, 17, 0.16), 0 8px 24px rgba(24, 13, 17, 0.08);
+  --ts-subtle:        0 1px 2px rgba(255, 255, 255, 0.9), 0 1px 4px rgba(24, 13, 17, 0.05);
+  --ts-dark:          0 1px 2px rgba(0, 0, 0, 0.6), 0 3px 10px rgba(0, 0, 0, 0.35);
+  --ts-glow-rose:     0 0 18px rgba(222, 142, 155, 0.5), 0 2px 8px rgba(198, 88, 106, 0.35);
+  --ts-glow-warm:     0 0 18px rgba(239, 182, 157, 0.5), 0 2px 8px rgba(176, 93, 71, 0.3);
+
+  /* Highlighter tokens */
+  --highlight-wash:   linear-gradient(108deg, rgba(239, 182, 157, 0.45) 0%, rgba(222, 142, 155, 0.42) 100%);
+  --highlight-gold:   linear-gradient(108deg, rgba(245, 230, 212, 0.70) 0%, rgba(239, 182, 157, 0.50) 100%);
+  --highlight-shadow: 0 2px 8px rgba(222, 142, 155, 0.28);
 }
 
 *, *::before, *::after {
@@ -109,6 +123,53 @@ a {
 h1, h2, h3, h4, h5, h6 {
   line-height: 1.1;
   font-weight: 400;
+  text-shadow: var(--ts-title);
+}
+
+h1 {
+  text-shadow: var(--ts-heading);
+}
+
+/* Translucent Glass Box Utilities */
+.glassBox {
+  background: rgba(255, 252, 249, 0.72);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(222, 142, 155, 0.22);
+  border-radius: var(--r-md);
+  box-shadow: 0 4px 20px -6px rgba(62, 37, 33, 0.06);
+}
+
+.glassBoxSubtle {
+  background: rgba(255, 255, 255, 0.58);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(215, 185, 175, 0.28);
+  border-radius: var(--r-xs);
+}
+
+/* High-contrast text shadows */
+.text-shadow-sm {
+  text-shadow: 0 1px 2px rgba(24, 13, 17, 0.12);
+}
+
+.text-shadow-md {
+  text-shadow: 0 2px 6px rgba(24, 13, 17, 0.16), 0 1px 2px rgba(24, 13, 17, 0.08);
+}
+
+.text-shadow-lg {
+  text-shadow: var(--ts-heading);
+}
+
+.text-shadow-glow {
+  text-shadow: var(--ts-glow-rose);
+}
+
+/* User Selection Highlight */
+::selection {
+  background: rgba(222, 142, 155, 0.38);
+  color: var(--ink);
+  text-shadow: 0 1px 2px rgba(24, 13, 17, 0.14);
 }
 
 img, svg {

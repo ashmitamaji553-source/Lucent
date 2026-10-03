@@ -51,6 +51,7 @@
   font-weight: 600;
   color: var(--dusty-rose);
   letter-spacing: 0.05em;
+  text-shadow: 0 1px 3px rgba(198, 88, 106, 0.25);
 }
 
 .blockTag {
@@ -59,6 +60,7 @@
   letter-spacing: 0.12em;
   color: var(--stone);
   text-transform: uppercase;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.9);
 }
 
 /* Value row */
@@ -76,6 +78,17 @@
   color: var(--ink);
   letter-spacing: -0.03em;
   font-variant-numeric: tabular-nums;
+  text-shadow: 
+    0 2px 6px rgba(24, 13, 17, 0.14),
+    0 8px 24px rgba(24, 13, 17, 0.08),
+    0 1px 1px rgba(255, 255, 255, 0.85);
+  transition: text-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.statBlock:hover .statValue {
+  text-shadow: 
+    0 4px 14px rgba(198, 88, 106, 0.25),
+    0 1px 2px rgba(24, 13, 17, 0.12);
 }
 
 .alertPill {
@@ -87,6 +100,8 @@
   background: var(--rose-subtle);
   padding: 2px 6px;
   border-radius: var(--r-xs);
+  box-shadow: 0 1px 4px rgba(184, 92, 107, 0.25);
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.7);
 }
 
 .priorityPill {
@@ -98,6 +113,8 @@
   background: var(--peach-subtle);
   padding: 2px 6px;
   border-radius: var(--r-xs);
+  box-shadow: 0 1px 4px rgba(214, 116, 98, 0.25);
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.7);
 }
 
 .syncDot {
@@ -105,6 +122,7 @@
   height: 7px;
   border-radius: 50%;
   background: var(--sage);
+  box-shadow: 0 0 8px rgba(110, 140, 106, 0.7);
   display: inline-block;
   align-self: center;
 }
@@ -114,7 +132,9 @@
   color: var(--clay);
   line-height: 1.45;
   margin-bottom: 16px;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.85), 0 1px 3px rgba(24, 13, 17, 0.04);
 }
+
 
 .statLink {
   display: inline-flex;
@@ -123,12 +143,14 @@
   font-size: 12px;
   font-weight: 500;
   color: var(--stone);
-  transition: color 0.14s ease;
+  transition: color 0.14s ease, text-shadow 0.14s ease;
   margin-top: auto;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.8);
 }
 
 .statBlock:hover .statLink {
-  color: var(--ink);
+  color: var(--dusty-rose);
+  text-shadow: 0 1px 3px rgba(198, 88, 106, 0.25);
 }
 
 .linkArrow {

@@ -18,11 +18,13 @@
   color: var(--stone);
   text-transform: uppercase;
   margin-bottom: 6px;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.9);
 }
 
 .indexNum {
   color: var(--terracotta);
   font-weight: 600;
+  text-shadow: 0 1px 2px rgba(176, 93, 71, 0.25);
 }
 
 .title {
@@ -30,6 +32,7 @@
   font-size: 24px;
   color: var(--ink);
   letter-spacing: -0.02em;
+  text-shadow: 0 1px 3px rgba(24, 13, 17, 0.12), 0 4px 12px rgba(24, 13, 17, 0.05);
 }
 
 .subtext {
@@ -37,6 +40,7 @@
   color: var(--clay);
   margin-top: 4px;
   line-height: 1.5;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.85);
 }
 
 .list {

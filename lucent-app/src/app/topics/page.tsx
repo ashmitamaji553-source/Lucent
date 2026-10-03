@@ -129,7 +129,7 @@ export default function TopicsPage() {
             <div style={{ marginTop: 14 }}>
               <button
                 className={styles.subjectBtn}
-                style={{ background: 'var(--e)', color: '#fff', justifyContent: 'center', padding: '10px' }}
+                style={{ background: 'var(--ink)', color: '#FAF4EF', justifyContent: 'center', padding: '11px', textShadow: '0 1px 2px rgba(0,0,0,0.6)', borderRadius: 'var(--r-xs)', boxShadow: '0 2px 8px rgba(24,13,17,0.18)' }}
                 onClick={() => handleStudyProgress(selectedSub.id)}
                 disabled={isStudying}
               >

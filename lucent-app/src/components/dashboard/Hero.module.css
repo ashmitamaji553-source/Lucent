@@ -49,6 +49,8 @@
   padding: 2px 7px;
   border-radius: var(--r-xs);
   letter-spacing: 0.06em;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.75);
+  box-shadow: 0 2px 6px rgba(24, 13, 17, 0.22);
 }
 
 .editionTag {
@@ -58,6 +60,7 @@
   letter-spacing: 0.14em;
   color: var(--stone);
   text-transform: uppercase;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.9);
 }
 
 .statusDot {
@@ -65,7 +68,7 @@
   height: 6px;
   border-radius: 50%;
   background: var(--dusty-rose);
-  box-shadow: 0 0 8px rgba(198, 88, 106, 0.8);
+  box-shadow: 0 0 10px rgba(198, 88, 106, 0.9);
   display: inline-block;
   margin-left: 4px;
 }
@@ -76,18 +79,22 @@
   letter-spacing: 0.1em;
   color: var(--dusty-rose);
   font-weight: 600;
+  text-shadow: 0 1px 4px rgba(198, 88, 106, 0.35);
 }
 
-/* Monumental Serif Headline */
+/* Monumental Serif Headline with Depth Shadows */
 .heading {
   font-family: var(--serif);
   font-size: clamp(44px, 4.8vw, 68px);
   font-weight: 400;
-  line-height: 0.98;
+  line-height: 1.02;
   letter-spacing: -0.025em;
   color: var(--ink);
-  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.6);
-  margin-bottom: 16px;
+  text-shadow: 
+    0 2px 4px rgba(24, 13, 17, 0.12),
+    0 8px 24px rgba(24, 13, 17, 0.08),
+    0 1px 1px rgba(255, 255, 255, 0.85);
+  margin-bottom: 18px;
 }
 
 .accent {
@@ -96,15 +103,18 @@
   background: linear-gradient(135deg, #C6586A 0%, #BA4E38 60%, #943A26 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  display: inline-block;
+  filter: drop-shadow(0 2px 8px rgba(198, 88, 106, 0.25));
 }
 
-/* Lead description */
+/* Lead description with legibility shadow */
 .desc {
   font-size: 16px;
-  line-height: 1.62;
+  line-height: 1.65;
   color: var(--clay);
   max-width: 580px;
   margin-bottom: 24px;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.85), 0 1px 3px rgba(24, 13, 17, 0.05);
 }
 
 /* Action buttons */
@@ -131,14 +141,15 @@
   transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
   cursor: pointer;
   white-space: nowrap;
-  box-shadow: 0 2px 8px rgba(36, 24, 21, 0.08);
+  box-shadow: 0 2px 8px rgba(36, 24, 21, 0.12), 0 6px 16px -4px rgba(24, 13, 17, 0.18);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6), 0 2px 6px rgba(0, 0, 0, 0.35);
 }
 
 .primary:hover {
   background: #2A171D;
   border-color: #2A171D;
   transform: translateY(-1px);
-  box-shadow: 0 4px 14px rgba(24, 13, 17, 0.22);
+  box-shadow: 0 4px 18px rgba(24, 13, 17, 0.28), 0 8px 24px -6px rgba(198, 88, 106, 0.25);
 }
 
 .primary:active {
@@ -149,6 +160,7 @@
   font-size: 14px;
   line-height: 1;
   transition: transform 0.16s ease;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
 }
 
 .primary:hover .btnIcon {
@@ -167,12 +179,14 @@
   transition: all 0.16s ease;
   padding: 8px 0;
   border-bottom: 1px solid var(--sand);
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
 }
 
 .secondary:hover {
   color: var(--dusty-rose);
   border-bottom-color: var(--dusty-rose);
   transform: translateX(2px);
+  text-shadow: 0 1px 4px rgba(198, 88, 106, 0.25);
 }
 
 .arrow {
@@ -211,6 +225,7 @@
   letter-spacing: 0.12em;
   color: var(--stone);
   text-transform: uppercase;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.85);
 }
 
 .telemetryVal {
@@ -218,17 +233,20 @@
   font-size: 12px;
   font-weight: 600;
   color: var(--ink);
-  transition: color 0.16s ease;
+  text-shadow: 0 1px 2px rgba(24, 13, 17, 0.12);
+  transition: color 0.16s ease, text-shadow 0.16s ease;
 }
 
 .telemetryItem:hover .telemetryVal {
   color: var(--dusty-rose);
+  text-shadow: 0 0 12px rgba(198, 88, 106, 0.4);
 }
 
 .telemetrySep {
   font-family: var(--mono);
   font-size: 12px;
   color: var(--sand);
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.8);
 }
 
 /* Sunset Prism Ambient Atmosphere (localized behind visual) */
