@@ -50,7 +50,7 @@ export class TextExtractor {
 
     let text = '';
     let pageCount: number | undefined;
-    let mimeType = declaredMime || this.guessMimeType(ext);
+    const mimeType = declaredMime || this.guessMimeType(ext);
 
     try {
       if (ext === '.pdf') {
@@ -62,7 +62,7 @@ export class TextExtractor {
       } else if (ext === '.txt' || ext === '.md') {
         text = buffer.toString('utf-8');
       } else if (['.png', '.jpg', '.jpeg', '.webp'].includes(ext)) {
-        text = await this.extractImage(buffer, filename, ext);
+        text = await this.extractImage(buffer, filename);
       }
     } catch (err: any) {
       if (err.message && err.message.startsWith('The uploaded') || err.message.startsWith('Could not')) {
@@ -162,7 +162,7 @@ export class TextExtractor {
     }
   }
 
-  private async extractImage(buffer: Buffer, filename: string, ext: string): Promise<string> {
+  private async extractImage(buffer: Buffer, filename: string): Promise<string> {
     try {
       // Use tesseract.js for OCR
       // eslint-disable-next-line @typescript-eslint/no-require-imports

@@ -16,12 +16,8 @@ export default function SetupPage() {
     return d.toISOString().split('T')[0];
   });
   const [hoursPerDay, setHoursPerDay] = useState(3);
-  const [subjectInput, setSubjectInput] = useState('Mathematics');
-  const [topics, setTopics] = useState<Array<{ name: string; confidence: 'Low' | 'Medium' | 'High' }>>([
-    { name: 'Probability', confidence: 'Low' },
-    { name: 'Calculus', confidence: 'Medium' },
-    { name: 'Algebra', confidence: 'High' },
-  ]);
+  const [subjectInput, setSubjectInput] = useState('');
+  const [topics, setTopics] = useState<Array<{ name: string; confidence: 'Low' | 'Medium' | 'High' }>>([]);
   const [newTopicName, setNewTopicName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -50,6 +46,11 @@ export default function SetupPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (topics.length === 0) {
+      showToast('Please add at least one topic to build your plan.');
+      return;
+    }
+
     setIsLoading(true);
     try {
       const confidenceMap: Record<string, string> = {};
@@ -57,10 +58,11 @@ export default function SetupPage() {
         confidenceMap[t.name] = t.confidence;
       });
 
+      const effectiveSubject = subjectInput.trim() || 'General Studies';
       const res = await apiClient.createPlan({
         examDate,
         hoursPerDay: Number(hoursPerDay),
-        subjects: subjectInput.split(',').map((s) => s.trim()).filter(Boolean),
+        subjects: effectiveSubject.split(',').map((s) => s.trim()).filter(Boolean),
         topics: topics.map((t) => t.name),
         confidence: confidenceMap,
       });
@@ -139,6 +141,11 @@ export default function SetupPage() {
           <div className={styles.formGroup} style={{ marginBottom: '18px' }}>
             <label className={styles.inputLabel}>Topics & Confidence Levels</label>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginTop: '6px' }}>
+              {topics.length === 0 && (
+                <div style={{ padding: '12px 14px', fontSize: '13px', color: 'var(--stone)', background: 'rgba(255, 255, 255, 0.03)', borderRadius: '6px', border: '1px dashed var(--border-subtle)' }}>
+                  No topics added yet. Add your exam topics below to calibrate confidence levels.
+                </div>
+              )}
               {topics.map((t, index) => (
                 <div key={t.name} className={styles.topicRowItem}>
                   <span className={styles.topicName}>{t.name}</span>

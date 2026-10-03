@@ -40,8 +40,8 @@ export async function POST(req: NextRequest) {
     // Completed session information
     const completedSession = body.completedSession || {
       sessionId: body.sessionId,
-      subject: body.subject || 'Mathematics',
-      topic: body.topic || 'Probability',
+      subject: body.subject || 'General',
+      topic: body.topic || '',
       duration: body.duration || 45,
       type: body.type || 'Learn',
     };
@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Current plan: use provided plan or fallback to persisted active plan
-    let currentPlan = body.currentPlan || planStore.getActivePlan();
+    const currentPlan = body.currentPlan || planStore.getActivePlan();
 
     // Available daily hours: support hoursPerDay, availableHours, or user preferences
     const hoursPerDay = Number(

@@ -7,8 +7,8 @@ import styles from './page.module.css';
 
 export default function SettingsPage() {
   const { showToast } = useToast();
-  const [name, setName] = useState('Ashmita');
-  const [email, setEmail] = useState('ashmita@example.com');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
   const [examDate, setExamDate] = useState('');
   const [studyGoal, setStudyGoal] = useState('3 hours');
   const [deadlineReminders, setDeadlineReminders] = useState(true);

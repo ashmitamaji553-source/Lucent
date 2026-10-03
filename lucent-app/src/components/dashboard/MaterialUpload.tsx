@@ -1,6 +1,6 @@
 'use client';
 import { useState, useRef } from 'react';
-import { getRelativeTime } from '@/lib/mockData';
+import { getRelativeTime } from '@/lib/dateUtils';
 import { useToast } from '@/components/ui/ToastProvider';
 import { useLucent } from '@/lib/LucentContext';
 import styles from './MaterialUpload.module.css';

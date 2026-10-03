@@ -2,35 +2,32 @@
 // POST /api/plan — AI study plan generation endpoint returning structured JSON
 
 import { NextRequest, NextResponse } from 'next/server';
-import { aiPlannerService, AiPlanResponse } from '@/services/ai-planner';
+import { aiPlannerService } from '@/services/ai-planner';
 import { userRepo, studyPlanRepo } from '@/lib/db/repositories';
 import { StudyPlanItem } from '@/lib/models/types';
-import { db } from '@/lib/db';
+import { planStore } from '@/services/plan-store';
 
 export const dynamic = 'force-dynamic';
-
-import { planStore } from '@/services/plan-store';
 
 export async function GET() {
   try {
     const user = userRepo.getPrimaryUser();
     const storedItems = studyPlanRepo.getAll();
-
-    let activePlan = planStore.getActivePlan();
+    const activePlan = planStore.getActivePlan();
 
     if (!activePlan) {
-      // Generate default verified plan using user preferences
-      activePlan = await aiPlannerService.generatePlan({
-        examDate: user.examDate || new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0],
-        hoursPerDay: Math.round((user.dailyStudyGoalMinutes || 180) / 60),
-        subjects: ['Mathematics'],
-        topics: [
-          { name: 'Probability', confidence: 'Low' },
-          { name: 'Calculus', confidence: 'Medium' },
-          { name: 'Algebra', confidence: 'High' },
-        ],
+      return NextResponse.json({
+        success: true,
+        summary: null,
+        days: [],
+        adaptation: null,
+        completedSessions: {},
+        feedbackHistory: [],
+        todayTasks: [],
+        upcomingTasks: [],
+        focusAreas: [],
+        studyTip: null,
       });
-      planStore.setActivePlan(activePlan);
     }
 
     const lastAdaptation = planStore.getLastAdaptation();
@@ -48,7 +45,7 @@ export async function GET() {
       feedbackHistory,
       todayTasks,
       upcomingTasks,
-      focusAreas: ['Probability', 'Calculus', 'Algebra'],
+      focusAreas: activePlan.days.flatMap((d) => d.sessions.map((s) => s.topic)),
       studyTip: activePlan.summary,
     });
   } catch (error: any) {
@@ -65,19 +62,34 @@ export async function POST(req: NextRequest) {
     try {
       body = await req.json();
     } catch {
-      // Empty body or regeneration request
       body = {};
     }
 
     const user = userRepo.getPrimaryUser();
-    const examDate = body.examDate || user.examDate || new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0];
-    const hoursPerDay = body.hoursPerDay || Math.round((user.dailyStudyGoalMinutes || 180) / 60) || 3;
-    const subjects = body.subjects || ['Mathematics'];
-    const topics = body.topics || [
-      { name: 'Probability', confidence: 'Low' },
-      { name: 'Calculus', confidence: 'Medium' },
-      { name: 'Algebra', confidence: 'High' },
-    ];
+    const examDate = body.examDate || user?.examDate || new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0];
+    const hoursPerDay = Number(body.hoursPerDay) || (user?.dailyStudyGoalMinutes ? Math.round(user.dailyStudyGoalMinutes / 60) : 3);
+    const subjects = Array.isArray(body.subjects) && body.subjects.length > 0
+      ? body.subjects
+      : typeof body.subjects === 'string' && body.subjects.trim()
+      ? [body.subjects.trim()]
+      : ['General Studies'];
+    
+    const topics = Array.isArray(body.topics) && body.topics.length > 0
+      ? body.topics
+      : [];
+
+    if (topics.length === 0) {
+      return NextResponse.json(
+        {
+          success: false,
+          summary: "Please provide at least one topic to generate your plan.",
+          days: [],
+          error: "At least one topic is required",
+        },
+        { status: 400 }
+      );
+    }
+
     const confidence = body.confidence;
 
     // Call the server-side AI study planner
@@ -125,8 +137,8 @@ export async function POST(req: NextRequest) {
 
     await studyPlanRepo.replaceAll(newItems);
 
-    // Return the exact required structured JSON response
     return NextResponse.json({
+      success: true,
       summary: plan.summary,
       days: plan.days,
     });
@@ -134,6 +146,7 @@ export async function POST(req: NextRequest) {
     console.error('Plan generation endpoint error:', error);
     return NextResponse.json(
       {
+        success: false,
         summary: "Lucent couldn't build your plan right now. Try again.",
         days: [],
         error: error.message || 'Plan generation failed',

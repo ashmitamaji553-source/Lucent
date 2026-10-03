@@ -72,12 +72,8 @@ export default function PlanPage() {
     return d.toISOString().split('T')[0];
   });
   const [hoursPerDay, setHoursPerDay] = useState(3);
-  const [subjectInput, setSubjectInput] = useState('Mathematics');
-  const [topics, setTopics] = useState<TopicConfidence[]>([
-    { name: 'Probability', confidence: 'Low' },
-    { name: 'Calculus', confidence: 'Medium' },
-    { name: 'Algebra', confidence: 'High' },
-  ]);
+  const [subjectInput, setSubjectInput] = useState('');
+  const [topics, setTopics] = useState<TopicConfidence[]>([]);
   const [newTopicName, setNewTopicName] = useState('');
 
   // 1. Initial Load: Read instantly from local storage, then sync with server
@@ -131,15 +127,9 @@ export default function PlanPage() {
             return merged;
           });
         }
-      } else if (!cachedPlan) {
-        // If neither cache nor server has a plan, generate initial verified plan
-        await handleGeneratePlan();
       }
     } catch (err) {
       console.warn('[PlanPage] Network or API issue, using local persistent state:', err);
-      if (!cachedPlan) {
-        showToast('Using offline study plan.');
-      }
     }
   }, []);
 
@@ -162,15 +152,21 @@ export default function PlanPage() {
   useEffect(() => {
     if (courseSubjects && courseSubjects.length > 0) {
       const firstCourse = courseSubjects[0];
-      if (firstCourse.subject && subjectInput === 'Mathematics') {
+      if (firstCourse.subject && !subjectInput) {
         setSubjectInput(firstCourse.subject);
       }
     }
-  }, [courseSubjects]);
+  }, [courseSubjects, subjectInput]);
 
   // Generate / Regenerate Plan (with duplicate submission prevention & validation)
   const handleGeneratePlan = async () => {
     if (isLoading) return; // Prevent duplicate concurrent generation
+
+    if (topics.length === 0) {
+      setShowSetup(true);
+      showToast('Please add at least one topic to build your plan.');
+      return;
+    }
 
     // Validate inputs
     const validHours = Math.min(12, Math.max(0.5, Number(hoursPerDay) || 3));
@@ -178,11 +174,8 @@ export default function PlanPage() {
       ? examDate
       : new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0];
 
-    const validTopics = topics.length > 0 ? topics : [
-      { name: 'Probability', confidence: 'Low' as const },
-      { name: 'Calculus', confidence: 'Medium' as const },
-      { name: 'Algebra', confidence: 'High' as const },
-    ];
+    const validTopics = topics;
+    const effectiveSubject = subjectInput.trim() || 'General Studies';
 
     setIsLoading(true);
     try {
@@ -195,14 +188,14 @@ export default function PlanPage() {
       lucentStorage.saveSetupConfig({
         examDate: validExamDate,
         hoursPerDay: validHours,
-        subjectInput,
+        subjectInput: effectiveSubject,
         topics: validTopics,
       });
 
       const response = await apiClient.createPlan({
         examDate: validExamDate,
         hoursPerDay: validHours,
-        subjects: subjectInput.split(',').map((s) => s.trim()).filter(Boolean),
+        subjects: effectiveSubject.split(',').map((s) => s.trim()).filter(Boolean),
         topics: validTopics.map((t) => t.name),
         confidence: confidenceMap,
       });
@@ -469,6 +462,11 @@ export default function PlanPage() {
           <div className={styles.formGroup} style={{ marginBottom: '18px' }}>
             <label className={styles.inputLabel}>Topics & Confidence Levels</label>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginTop: '6px' }}>
+              {topics.length === 0 && (
+                <div style={{ padding: '12px 14px', fontSize: '13px', color: 'var(--stone)', background: 'rgba(255, 255, 255, 0.03)', borderRadius: '6px', border: '1px dashed var(--border-subtle)' }}>
+                  No topics added yet. Add your exam topics below to calibrate confidence levels.
+                </div>
+              )}
               {topics.map((t, index) => (
                 <div key={t.name} className={styles.topicRowItem}>
                   <span className={styles.topicName}>{t.name}</span>

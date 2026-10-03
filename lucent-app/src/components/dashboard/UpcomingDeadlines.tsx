@@ -1,5 +1,5 @@
 'use client';
-import { getDaysUntil, getDateLabel } from '@/lib/mockData';
+import { getDaysUntil, getDateLabel } from '@/lib/dateUtils';
 import { useLucent } from '@/lib/LucentContext';
 import styles from './UpcomingDeadlines.module.css';
 
@@ -18,24 +18,30 @@ export default function UpcomingDeadlines() {
       </div>
 
       <div className={styles.list}>
-        {deadlines.slice(0, 4).map((dl) => {
-          const dateVal = (dl as any).dueDate || (dl as any).date;
-          const { month, day } = getDateLabel(dateVal);
-          const daysUntil = getDaysUntil(dateVal);
-          return (
-            <div key={dl.id} className={styles.deadlineItem}>
-              <div className={styles.dateStamp}>
-                <span className={styles.month}>{month}</span>
-                <span className={styles.day}>{day}</span>
+        {deadlines.length === 0 ? (
+          <div style={{ padding: '28px 16px', textAlign: 'center', color: 'var(--stone)', fontSize: '13px', lineHeight: 1.5 }}>
+            No upcoming deadlines recorded. Notices and exam schedules will populate here automatically.
+          </div>
+        ) : (
+          deadlines.slice(0, 4).map((dl) => {
+            const dateVal = dl.dueDate || dl.date || '';
+            const { month, day } = getDateLabel(dateVal);
+            const daysUntil = getDaysUntil(dateVal);
+            return (
+              <div key={dl.id} className={styles.deadlineItem}>
+                <div className={styles.dateStamp}>
+                  <span className={styles.month}>{month}</span>
+                  <span className={styles.day}>{day}</span>
+                </div>
+                <div className={styles.info}>
+                  <div className={styles.itemTitle}>{dl.title}</div>
+                  <div className={styles.itemDesc}>{dl.description}</div>
+                </div>
+                <div className={styles.countdown}>{daysUntil}</div>
               </div>
-              <div className={styles.info}>
-                <div className={styles.itemTitle}>{dl.title}</div>
-                <div className={styles.itemDesc}>{dl.description}</div>
-              </div>
-              <div className={styles.countdown}>{daysUntil}</div>
-            </div>
-          );
-        })}
+            );
+          })
+        )}
       </div>
     </article>
   );

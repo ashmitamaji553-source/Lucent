@@ -395,13 +395,13 @@ export const compositeRepo = {
     const subjects = this.getAllSubjectsCoverage();
     const overallReadiness = subjects.length > 0
       ? Math.round(subjects.reduce((acc, s) => acc + s.coverage, 0) / subjects.length)
-      : 68;
+      : 0;
 
     return {
       missingTopics: missing,
       updatedNotices: updatedNotices,
       highPriorityTopics: highPriority,
-      overallReadiness: overallReadiness || 68,
+      overallReadiness,
     };
   },
 };

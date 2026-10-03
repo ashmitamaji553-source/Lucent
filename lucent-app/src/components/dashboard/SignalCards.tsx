@@ -34,15 +34,16 @@ export default function SignalCards() {
     const observer = new IntersectionObserver(
       (entries) => {
         const [entry] = entries;
-        if (entry.isIntersecting && !hasAnimatedRef.current) {
+        if (entry.isIntersecting) {
+          const isInitial = !hasAnimatedRef.current;
           hasAnimatedRef.current = true;
 
           const counterObj = {
-            missing: 0,
-            notices: 0,
-            priority: 0,
-            readiness: 0,
-            gauge: 0,
+            missing: displayMissing,
+            notices: displayNotices,
+            priority: displayPriority,
+            readiness: displayReadiness,
+            gauge: gaugeWidth,
           };
 
           gsap.to(counterObj, {
@@ -51,7 +52,7 @@ export default function SignalCards() {
             priority: s.highPriorityTopics,
             readiness: s.overallReadiness,
             gauge: s.overallReadiness,
-            duration: 1.35,
+            duration: isInitial ? 1.35 : 0.6,
             ease: 'power2.out',
             onUpdate: () => {
               setDisplayMissing(Math.round(counterObj.missing));

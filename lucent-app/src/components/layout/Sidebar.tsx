@@ -1,6 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useLucent } from '@/lib/LucentContext';
 import styles from './Sidebar.module.css';
 
 interface NavItem {
@@ -21,6 +22,8 @@ const navItems: NavItem[] = [
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const { signals } = useLucent();
+  const readiness = Math.min(100, Math.max(0, signals?.overallReadiness ?? 0));
 
   return (
     <aside className={styles.sidebar}>
@@ -68,10 +71,10 @@ export default function Sidebar() {
             <span className={styles.termStatus}>SYNCED</span>
           </div>
           <div className={styles.termProgress}>
-            <div className={styles.termProgressBar} style={{ width: '68%' }} />
+            <div className={styles.termProgressBar} style={{ width: `${readiness}%` }} />
           </div>
           <div className={styles.termMeta}>
-            <span>68% CURRICULUM COVERED</span>
+            <span>{readiness}% CURRICULUM COVERED</span>
           </div>
         </div>
 

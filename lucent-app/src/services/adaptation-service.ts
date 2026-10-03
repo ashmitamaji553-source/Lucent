@@ -42,9 +42,6 @@ export class AdaptationService {
     const hoursPerDay = input.hoursPerDay || input.availableHours || 3;
     const maxDailyMinutes = hoursPerDay * 60;
     const daysRemaining = input.daysRemaining || 7;
-    const topic = input.completedSession.topic;
-    const subject = input.completedSession.subject || 'Core';
-    const feedback = input.feedback;
 
     let aiResult: AdaptedPlanResponse | null = null;
 
@@ -141,7 +138,7 @@ RESPOND IN EXACT JSON SCHEMA ONLY:
         if (!s || typeof s !== 'object') continue;
         const sTopic = typeof s.topic === 'string' ? s.topic.trim() : 'Core Topic';
         const sSubject = typeof s.subject === 'string' ? s.subject.trim() : input.completedSession.subject;
-        let duration = typeof s.duration === 'number' && !isNaN(s.duration) ? Math.max(15, Math.round(s.duration)) : 30;
+        const duration = typeof s.duration === 'number' && !isNaN(s.duration) ? Math.max(15, Math.round(s.duration)) : 30;
 
         let type: SessionType = 'Learn';
         const rawType = String(s.type || '').toLowerCase();

@@ -32,9 +32,9 @@ export default function TutorPage() {
   const { documents } = useLucent();
   const [messages, setMessages] = useState<TutorMessage[]>([]);
   const [suggestedQuestions, setSuggestedQuestions] = useState<string[]>([
-    'Explain AVL tree rotations',
-    'What topics from PYQ 2024 do I need to review?',
-    'How is normalization tested in DBMS?',
+    'How should I structure my revision for upcoming exams?',
+    'What study techniques work best for difficult topics?',
+    'Help me break down a complex concept step by step.',
   ]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -105,17 +105,25 @@ export default function TutorPage() {
 
           <div className={styles.contextSection}>
             <div className={styles.sectionLabel}>Current Context</div>
-            <div className={styles.contextPath}>Data Structures → Trees → AVL Trees</div>
+            <div className={styles.contextPath}>
+              {documents.length > 0 ? `${documents.length} document${documents.length > 1 ? 's' : ''} indexed` : 'General Workspace'}
+            </div>
           </div>
 
           <div className={styles.contextSection}>
             <div className={styles.sectionLabel}>Based on your materials</div>
-            {documents.slice(0, 4).map((f) => (
-              <div key={f.id} className={styles.sourceFile}>
-                <div className={styles.fileIcon}>PDF</div>
-                <span>{f.name}</span>
-              </div>
-            ))}
+            {documents.length === 0 ? (
+              <p style={{ fontSize: '12px', color: 'var(--stone)', lineHeight: 1.5 }}>
+                No materials uploaded yet. Upload syllabus or lecture notes in My Materials.
+              </p>
+            ) : (
+              documents.slice(0, 4).map((f) => (
+                <div key={f.id} className={styles.sourceFile}>
+                  <div className={styles.fileIcon}>PDF</div>
+                  <span>{f.name}</span>
+                </div>
+              ))
+            )}
           </div>
 
           <div className={styles.contextSection}>

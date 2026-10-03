@@ -1,5 +1,5 @@
 'use client';
-import { getRelativeTime } from '@/lib/mockData';
+import { getRelativeTime } from '@/lib/dateUtils';
 import { useLucent } from '@/lib/LucentContext';
 import styles from './RecentUploads.module.css';
 
@@ -18,22 +18,28 @@ export default function RecentUploads() {
       </div>
 
       <div className={styles.feed}>
-        {documents.slice(0, 5).map((file, idx) => (
-          <div key={file.id} className={styles.item}>
-            <span className={styles.itemSeq}>0{idx + 1}</span>
-            <div className={styles.itemContent}>
-              <div className={styles.itemTitleRow}>
-                <span className={styles.itemName}>{file.name}</span>
-                <span className={styles.itemType}>{file.type}</span>
-              </div>
-              <div className={styles.itemMeta}>
-                <span className={styles.itemTime}>{getRelativeTime(file.uploadedAt)}</span>
-                <span className={styles.metaDot}>•</span>
-                <span className={styles.itemStatus}>{file.status.toUpperCase()}</span>
+        {documents.length === 0 ? (
+          <div style={{ padding: '28px 16px', textAlign: 'center', color: 'var(--stone)', fontSize: '13px', lineHeight: 1.5 }}>
+            No materials uploaded yet. Upload your syllabus or notes to start tracking.
+          </div>
+        ) : (
+          documents.slice(0, 5).map((file, idx) => (
+            <div key={file.id} className={styles.item}>
+              <span className={styles.itemSeq}>0{idx + 1}</span>
+              <div className={styles.itemContent}>
+                <div className={styles.itemTitleRow}>
+                  <span className={styles.itemName}>{file.name}</span>
+                  <span className={styles.itemType}>{file.type}</span>
+                </div>
+                <div className={styles.itemMeta}>
+                  <span className={styles.itemTime}>{getRelativeTime(file.uploadedAt)}</span>
+                  <span className={styles.metaDot}>•</span>
+                  <span className={styles.itemStatus}>{file.status.toUpperCase()}</span>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
     </article>
   );

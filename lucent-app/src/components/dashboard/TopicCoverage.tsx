@@ -12,17 +12,16 @@ function getCoverageStatus(coverage: number) {
 export default function TopicCoverage() {
   const { subjects } = useLucent();
   const panelRef = useRef<HTMLElement>(null);
-  const [hasRevealed, setHasRevealed] = useState(false);
+  const [hasRevealed, setHasRevealed] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    }
+    return false;
+  });
 
   useEffect(() => {
     const el = panelRef.current;
-    if (!el) return;
-
-    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReduced) {
-      setHasRevealed(true);
-      return;
-    }
+    if (!el || hasRevealed) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -37,7 +36,7 @@ export default function TopicCoverage() {
 
     observer.observe(el);
     return () => observer.disconnect();
-  }, []);
+  }, [hasRevealed]);
 
   return (
     <article ref={panelRef} className={styles.panel}>
@@ -51,30 +50,36 @@ export default function TopicCoverage() {
       </div>
 
       <div className={styles.list}>
-        {subjects.map((topic, idx) => {
-          const status = getCoverageStatus(topic.coverage);
-          return (
-            <div key={topic.id} className={styles.subjectItem}>
-              <div className={styles.subjectRow}>
-                <span className={styles.subjectName}>{topic.subject}</span>
-                <div className={styles.metricGroup}>
-                  <span className={`${styles.statusBadge} ${status.class}`}>{status.label}</span>
-                  <span className={styles.percentage}>{topic.coverage}%</span>
+        {subjects.length === 0 ? (
+          <div style={{ padding: '28px 16px', textAlign: 'center', color: 'var(--stone)', fontSize: '13px', lineHeight: 1.5 }}>
+            No subjects analyzed yet. Upload course materials to measure curriculum topology.
+          </div>
+        ) : (
+          subjects.map((topic, idx) => {
+            const status = getCoverageStatus(topic.coverage);
+            return (
+              <div key={topic.id} className={styles.subjectItem}>
+                <div className={styles.subjectRow}>
+                  <span className={styles.subjectName}>{topic.subject}</span>
+                  <div className={styles.metricGroup}>
+                    <span className={`${styles.statusBadge} ${status.class}`}>{status.label}</span>
+                    <span className={styles.percentage}>{topic.coverage}%</span>
+                  </div>
+                </div>
+
+                <div className={styles.track}>
+                  <div
+                    className={`${styles.fill} ${status.class}`}
+                    style={{
+                      width: hasRevealed ? `${topic.coverage}%` : '0%',
+                      transitionDelay: `${idx * 80}ms`,
+                    }}
+                  />
                 </div>
               </div>
-
-              <div className={styles.track}>
-                <div
-                  className={`${styles.fill} ${status.class}`}
-                  style={{
-                    width: hasRevealed ? `${topic.coverage}%` : '0%',
-                    transitionDelay: `${idx * 80}ms`,
-                  }}
-                />
-              </div>
-            </div>
-          );
-        })}
+            );
+          })
+        )}
       </div>
     </article>
   );

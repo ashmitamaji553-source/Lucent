@@ -1,7 +1,7 @@
 // src/app/materials/page.tsx
 'use client';
 import { useState, useRef } from 'react';
-import { getRelativeTime } from '@/lib/mockData';
+import { getRelativeTime } from '@/lib/dateUtils';
 import { useToast } from '@/components/ui/ToastProvider';
 import { useLucent } from '@/lib/LucentContext';
 import styles from './page.module.css';
@@ -87,22 +87,28 @@ export default function MaterialsPage() {
             <span>Status</span>
             <span>Uploaded</span>
           </div>
-          {documents.map(file => (
-            <div key={file.id} className={styles.fileRow}>
-              <div className={styles.fileMain}>
-                <div className={styles.ficon}>PDF</div>
-                <div className={styles.finfo}>
-                  <div className={styles.fname}>{file.name}</div>
-                </div>
-              </div>
-              <span className={styles.typePill}>{file.type}</span>
-              <div className={`${styles.status} ${file.status === 'Processing' ? styles.processing : ''}`}>
-                <div className={`${styles.statusDot} ${file.status === 'Processed' ? styles.processed : styles.proc}`} />
-                {file.status}
-              </div>
-              <span className={styles.fileAge}>{getRelativeTime(file.uploadedAt)}</span>
+          {documents.length === 0 ? (
+            <div style={{ padding: '36px 16px', textAlign: 'center', color: 'var(--stone)', fontSize: '13px', lineHeight: 1.5 }}>
+              No study materials uploaded yet. Drop a syllabus or lecture note into the upload area above to begin.
             </div>
-          ))}
+          ) : (
+            documents.map(file => (
+              <div key={file.id} className={styles.fileRow}>
+                <div className={styles.fileMain}>
+                  <div className={styles.ficon}>PDF</div>
+                  <div className={styles.finfo}>
+                    <div className={styles.fname}>{file.name}</div>
+                  </div>
+                </div>
+                <span className={styles.typePill}>{file.type}</span>
+                <div className={`${styles.status} ${file.status === 'Processing' ? styles.processing : ''}`}>
+                  <div className={`${styles.statusDot} ${file.status === 'Processed' ? styles.processed : styles.proc}`} />
+                  {file.status}
+                </div>
+                <span className={styles.fileAge}>{getRelativeTime(file.uploadedAt)}</span>
+              </div>
+            ))
+          )}
         </div>
       </div>
     </div>

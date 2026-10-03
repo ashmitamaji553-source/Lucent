@@ -5,8 +5,8 @@ import { apiClient } from '@/lib/api-client';
 import styles from './Topbar.module.css';
 
 export default function Topbar() {
-  const [userName, setUserName] = useState('Ashmita Maji');
-  const [avatar, setAvatar] = useState('AM');
+  const [userName, setUserName] = useState('Scholar');
+  const [avatar, setAvatar] = useState('S');
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<Array<{ type: string; title: string; subtitle: string; url: string }>>([]);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -22,13 +22,12 @@ export default function Topbar() {
   }, []);
 
   useEffect(() => {
-    if (!query.trim()) {
-      setResults([]);
-      setShowDropdown(false);
-      return;
-    }
-
     const timer = setTimeout(async () => {
+      if (!query.trim()) {
+        setResults([]);
+        setShowDropdown(false);
+        return;
+      }
       try {
         const found = await apiClient.search(query);
         setResults(found);
@@ -36,7 +35,7 @@ export default function Topbar() {
       } catch {
         setResults([]);
       }
-    }, 250);
+    }, query.trim() ? 250 : 0);
 
     return () => clearTimeout(timer);
   }, [query]);

@@ -1,4 +1,6 @@
-// lib/mockData.ts
+// src/lib/mockData.ts
+// [DEVELOPMENT REFERENCE ONLY]
+// This file is strictly for offline reference/testing. Production runtime NEVER imports or uses this data.
 import { UploadedFile, LegacyDeadline, TopicCoverage, Signal, StudyTask, ChatMessage, Resource } from './types';
 
 export const mockFiles: UploadedFile[] = [

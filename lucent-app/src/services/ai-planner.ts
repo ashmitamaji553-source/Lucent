@@ -37,7 +37,6 @@ export class AiPlannerService {
    */
   public async generatePlan(input: PlanGenerationInput): Promise<AiPlanResponse> {
     const normalized = this.normalizeInput(input);
-    const dailyMinutes = normalized.hoursPerDay * 60;
 
     let aiResult: AiPlanResponse | null = null;
 
@@ -91,7 +90,7 @@ export class AiPlannerService {
     } else if (typeof input.subjects === 'string' && input.subjects.trim()) {
       subjects = input.subjects.split(',').map((s) => s.trim()).filter(Boolean);
     }
-    if (subjects.length === 0) subjects = ['Mathematics'];
+    if (subjects.length === 0) subjects = ['General Studies'];
 
     // 4. Topics & Confidence
     const confidenceMap: Record<string, 'Low' | 'Medium' | 'High'> = {};
@@ -120,9 +119,7 @@ export class AiPlannerService {
 
     if (topics.length === 0) {
       topics.push(
-        { name: 'Probability', confidence: 'Low' },
-        { name: 'Calculus', confidence: 'Medium' },
-        { name: 'Algebra', confidence: 'High' }
+        { name: `${subjects[0]} Review`, confidence: 'Medium' }
       );
     }
 
@@ -219,7 +216,7 @@ RESPOND WITH THIS EXACT JSON SCHEMA ONLY:
         if (!s || typeof s !== 'object') continue;
         const topic = typeof s.topic === 'string' ? s.topic.trim() : 'Core Concepts';
         const subject = typeof s.subject === 'string' ? s.subject.trim() : norm.subjects[0];
-        let duration = typeof s.duration === 'number' && !isNaN(s.duration) ? Math.max(15, Math.round(s.duration)) : 30;
+        const duration = typeof s.duration === 'number' && !isNaN(s.duration) ? Math.max(15, Math.round(s.duration)) : 30;
 
         let type: SessionType = 'Learn';
         const rawType = String(s.type || '').toLowerCase();

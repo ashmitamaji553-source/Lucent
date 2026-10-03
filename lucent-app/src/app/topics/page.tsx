@@ -45,7 +45,18 @@ export default function TopicsPage() {
         <p className={styles.desc}>Navigate your curriculum. See where your coverage gaps are.</p>
       </div>
 
-      <div className={styles.layout}>
+      {subjects.length === 0 ? (
+        <div style={{ padding: '48px 24px', textAlign: 'center', background: 'rgba(255, 255, 255, 0.02)', borderRadius: '12px', border: '1px solid var(--border-subtle)', maxWidth: '560px', margin: '40px auto' }}>
+          <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '22px', marginBottom: '8px', color: 'var(--ink)' }}>No Topics Analyzed Yet</h2>
+          <p style={{ color: 'var(--stone)', fontSize: '14px', marginBottom: '20px', lineHeight: 1.5 }}>
+            Upload your syllabus, lecture notes, or past year papers in My Materials to populate your curriculum topic map.
+          </p>
+          <a href="/materials" className={styles.studyBtn} style={{ display: 'inline-block', padding: '10px 20px', textDecoration: 'none' }}>
+            Go to My Materials →
+          </a>
+        </div>
+      ) : (
+        <div className={styles.layout}>
         {/* Subject list */}
         <aside className={styles.subjects}>
           <div className={styles.sectionLabel}>Subjects</div>
@@ -139,7 +150,7 @@ export default function TopicsPage() {
 
             {selectedSub.coverage < 60 && (
               <div className={styles.missing}>
-                <div className={styles.missingLabel}>What's missing?</div>
+                <div className={styles.missingLabel}>What&apos;s missing?</div>
                 <p className={styles.missingText}>
                   This topic needs more coverage. Review your uploaded notes and practice with recent PYQs to strengthen this area.
                 </p>
@@ -160,6 +171,7 @@ export default function TopicsPage() {
           </div>
         )}
       </div>
+      )}
     </div>
   );
 }

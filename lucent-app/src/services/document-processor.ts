@@ -21,11 +21,13 @@ export interface ProcessedDocumentResult {
   deadlinesFound: string[];
 }
 
+import { DATA_DIR } from '@/lib/db';
+
 export class DocumentProcessor {
   private uploadsDir: string;
 
   constructor() {
-    this.uploadsDir = path.join(process.cwd(), '.lucent', 'uploads');
+    this.uploadsDir = path.join(DATA_DIR, 'uploads');
   }
 
   private ensureUploadsDir() {

@@ -6,7 +6,9 @@ import path from 'path';
 import { AiPlanResponse } from './ai-planner';
 import { AdaptationDetails } from './adaptation-service';
 
-const PLAN_FILE = path.join(process.cwd(), '.lucent', 'active_plan.json');
+import { DATA_DIR } from '@/lib/db';
+
+const PLAN_FILE = path.join(DATA_DIR, 'active_plan.json');
 
 export interface FeedbackRecord {
   sessionId?: string;
@@ -28,10 +30,6 @@ class PlanStore {
   private inMemoryCache: StoredPlanState | null = null;
 
   public getActivePlan(): AiPlanResponse | null {
-    if (this.inMemoryCache) {
-      return this.inMemoryCache.plan;
-    }
-
     try {
       if (fs.existsSync(PLAN_FILE)) {
         const raw = fs.readFileSync(PLAN_FILE, 'utf-8');
@@ -42,12 +40,17 @@ class PlanStore {
           feedbackLog: parsed.feedbackLog || [],
         };
         return parsed.plan;
+      } else {
+        this.inMemoryCache = null;
+        return null;
       }
     } catch (e) {
       console.warn('Could not read cached plan:', e);
+      if (this.inMemoryCache) {
+        return this.inMemoryCache.plan;
+      }
+      return null;
     }
-
-    return null;
   }
 
   public getLastAdaptation(): AdaptationDetails | undefined {

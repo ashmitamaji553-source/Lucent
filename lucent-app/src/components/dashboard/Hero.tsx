@@ -7,8 +7,9 @@ import { useToast } from '@/components/ui/ToastProvider';
 import styles from './Hero.module.css';
 
 export default function Hero() {
-  const { uploadFiles } = useLucent();
+  const { uploadFiles, subjects } = useLucent();
   const { showToast } = useToast();
+  const courseCount = subjects?.length || 0;
 
   const heroRef = useRef<HTMLElement>(null);
   const copyRef = useRef<HTMLDivElement>(null);
@@ -164,7 +165,7 @@ export default function Hero() {
         <div ref={telemetryRef} className={styles.telemetryBar}>
           <div className={styles.telemetryItem}>
             <span className={styles.telemetryLabel}>COVERAGE MAP</span>
-            <span className={styles.telemetryVal}>5 COURSES</span>
+            <span className={styles.telemetryVal}>{courseCount > 0 ? `${courseCount} COURSE${courseCount > 1 ? 'S' : ''}` : 'NO COURSES YET'}</span>
           </div>
           <div className={styles.telemetrySep}>/</div>
           <div className={styles.telemetryItem}>
