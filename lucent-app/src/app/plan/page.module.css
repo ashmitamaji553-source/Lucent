@@ -730,3 +730,38 @@
   border-color: var(--ink);
 }
 
+/* Empty State Card */
+.emptyStateCard {
+  background: #fff;
+  border: 1px dashed var(--sand);
+  border-radius: var(--r-md, 8px);
+  padding: 48px 32px;
+  text-align: center;
+  max-width: 520px;
+  margin: 32px auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.emptyStateIcon {
+  font-size: 32px;
+  margin-bottom: 12px;
+}
+
+.emptyStateTitle {
+  font-family: var(--serif);
+  font-size: 22px;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+
+.emptyStateDesc {
+  font-size: 14px;
+  color: var(--stone);
+  line-height: 1.5;
+  margin-bottom: 24px;
+  max-width: 380px;
+}
+
+

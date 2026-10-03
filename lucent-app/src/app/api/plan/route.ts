@@ -34,6 +34,8 @@ export async function GET() {
     }
 
     const lastAdaptation = planStore.getLastAdaptation();
+    const completedSessions = planStore.getCompletedSessionsMap();
+    const feedbackHistory = planStore.getFeedbackLog();
     const todayTasks = storedItems.filter((t) => !t.dueDate);
     const upcomingTasks = storedItems.filter((t) => Boolean(t.dueDate));
 
@@ -42,6 +44,8 @@ export async function GET() {
       summary: activePlan.summary,
       days: activePlan.days,
       adaptation: lastAdaptation,
+      completedSessions,
+      feedbackHistory,
       todayTasks,
       upcomingTasks,
       focusAreas: ['Probability', 'Calculus', 'Algebra'],

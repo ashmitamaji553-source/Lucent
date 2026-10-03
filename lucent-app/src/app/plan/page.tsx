@@ -1,9 +1,10 @@
 // src/app/plan/page.tsx
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { apiClient } from '@/lib/api-client';
 import { useToast } from '@/components/ui/ToastProvider';
 import { useLucent } from '@/lib/LucentContext';
+import { lucentStorage } from '@/lib/storage';
 import styles from './page.module.css';
 
 interface SessionItem {
@@ -64,7 +65,7 @@ export default function PlanPage() {
   const [isAdapting, setIsAdapting] = useState(false);
   const [adaptationData, setAdaptationData] = useState<AdaptationDetails | null>(null);
 
-  // Setup form inputs
+  // Setup form inputs (hydrated with persistent defaults)
   const [examDate, setExamDate] = useState(() => {
     const d = new Date();
     d.setDate(d.getDate() + 7);
@@ -79,29 +80,83 @@ export default function PlanPage() {
   ]);
   const [newTopicName, setNewTopicName] = useState('');
 
-  // Initial load: fetch active AI plan from server
-  const loadPlan = async () => {
+  // 1. Initial Load: Read instantly from local storage, then sync with server
+  const loadPlan = useCallback(async () => {
+    // Immediate hydration from localStorage so state is never lost on refresh
+    const cachedPlan = lucentStorage.getPlan<AiPlan>();
+    if (cachedPlan && cachedPlan.days && cachedPlan.days.length > 0) {
+      setPlan(cachedPlan);
+    }
+
+    const cachedCompleted = lucentStorage.getCompletedSessions();
+    if (cachedCompleted && Object.keys(cachedCompleted).length > 0) {
+      setCompletedSessions(cachedCompleted);
+    }
+
+    const cachedAdapt = lucentStorage.getAdaptation<AdaptationDetails>();
+    if (cachedAdapt) {
+      setAdaptationData(cachedAdapt);
+    }
+
+    const cachedSetup = lucentStorage.getSetupConfig<any>();
+    if (cachedSetup) {
+      if (cachedSetup.examDate) setExamDate(cachedSetup.examDate);
+      if (cachedSetup.hoursPerDay) setHoursPerDay(cachedSetup.hoursPerDay);
+      if (cachedSetup.subjectInput) setSubjectInput(cachedSetup.subjectInput);
+      if (Array.isArray(cachedSetup.topics) && cachedSetup.topics.length > 0) {
+        setTopics(cachedSetup.topics);
+      }
+    }
+
+    // Server-side synchronization
     try {
       const data = await apiClient.getPlan();
       if (data && data.days && data.days.length > 0) {
-        setPlan({
+        const loadedPlan: AiPlan = {
           summary: data.summary || data.studyTip || 'Your personalized AI study plan.',
           days: data.days,
-        });
+        };
+        setPlan(loadedPlan);
+        lucentStorage.savePlan(loadedPlan);
+
         if ((data as any).adaptation) {
           setAdaptationData((data as any).adaptation);
+          lucentStorage.saveAdaptation((data as any).adaptation);
         }
-      } else {
+
+        if ((data as any).completedSessions) {
+          setCompletedSessions((prev) => {
+            const merged = { ...prev, ...(data as any).completedSessions };
+            lucentStorage.saveCompletedSessions(merged);
+            return merged;
+          });
+        }
+      } else if (!cachedPlan) {
+        // If neither cache nor server has a plan, generate initial verified plan
         await handleGeneratePlan();
       }
     } catch (err) {
-      console.warn('Failed to load plan:', err);
+      console.warn('[PlanPage] Network or API issue, using local persistent state:', err);
+      if (!cachedPlan) {
+        showToast('Using offline study plan.');
+      }
     }
-  };
+  }, []);
 
   useEffect(() => {
     loadPlan();
-  }, []);
+  }, [loadPlan]);
+
+  // Keyboard navigation & modal dismiss
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && activeModal !== 'none' && !isAdapting) {
+        setActiveModal('none');
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [activeModal, isAdapting]);
 
   // Update available topics from uploaded courses if available
   useEffect(() => {
@@ -113,27 +168,52 @@ export default function PlanPage() {
     }
   }, [courseSubjects]);
 
+  // Generate / Regenerate Plan (with duplicate submission prevention & validation)
   const handleGeneratePlan = async () => {
+    if (isLoading) return; // Prevent duplicate concurrent generation
+
+    // Validate inputs
+    const validHours = Math.min(12, Math.max(0.5, Number(hoursPerDay) || 3));
+    const validExamDate = examDate && !isNaN(new Date(examDate).getTime())
+      ? examDate
+      : new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0];
+
+    const validTopics = topics.length > 0 ? topics : [
+      { name: 'Probability', confidence: 'Low' as const },
+      { name: 'Calculus', confidence: 'Medium' as const },
+      { name: 'Algebra', confidence: 'High' as const },
+    ];
+
     setIsLoading(true);
     try {
       const confidenceMap: Record<string, string> = {};
-      topics.forEach((t) => {
+      validTopics.forEach((t) => {
         confidenceMap[t.name] = t.confidence;
       });
 
+      // Save setup config in local storage
+      lucentStorage.saveSetupConfig({
+        examDate: validExamDate,
+        hoursPerDay: validHours,
+        subjectInput,
+        topics: validTopics,
+      });
+
       const response = await apiClient.createPlan({
-        examDate,
-        hoursPerDay: Number(hoursPerDay),
+        examDate: validExamDate,
+        hoursPerDay: validHours,
         subjects: subjectInput.split(',').map((s) => s.trim()).filter(Boolean),
-        topics: topics.map((t) => t.name),
+        topics: validTopics.map((t) => t.name),
         confidence: confidenceMap,
       });
 
       if (response && response.days && response.days.length > 0) {
-        setPlan({
+        const newPlan: AiPlan = {
           summary: response.summary,
           days: response.days,
-        });
+        };
+        setPlan(newPlan);
+        lucentStorage.savePlan(newPlan);
         setShowSetup(false);
         showToast('Study plan generated successfully!');
       } else {
@@ -147,9 +227,13 @@ export default function PlanPage() {
     }
   };
 
+  // Toggle session completion (persisted locally and server-synced)
   const toggleSession = (key: string) => {
     setCompletedSessions((prev) => {
       const next = { ...prev, [key]: !prev[key] };
+      lucentStorage.saveCompletedSessions(next);
+      // Background synchronization
+      apiClient.togglePlanItem(key).catch(() => {});
       showToast(next[key] ? 'Session completed! Great work.' : 'Session reopened.');
       return next;
     });
@@ -176,23 +260,30 @@ export default function PlanPage() {
 
   // Student selects feedback -> trigger POST /api/feedback & POST /api/adapt
   const handleFeedbackSelect = async (status: 'understood' | 'needs_practice' | 'struggled') => {
-    if (!activeSession) return;
+    if (!activeSession || isAdapting) return; // Prevent duplicate submissions
 
     setIsAdapting(true);
+
+    // 1. Immediately record in persistent localStorage
+    const updatedCompleted = lucentStorage.setSessionCompleted(activeSession.sessionId, true);
+    setCompletedSessions(updatedCompleted);
+
+    lucentStorage.recordFeedback({
+      sessionId: activeSession.sessionId,
+      subject: activeSession.subject,
+      topic: activeSession.topic,
+      status,
+      timestamp: new Date().toISOString(),
+    });
+
     try {
-      // 1. POST /api/feedback
+      // 2. POST /api/feedback
       await apiClient.submitFeedback({
         sessionId: activeSession.sessionId,
         subject: activeSession.subject,
         topic: activeSession.topic,
         status,
-      });
-
-      // 2. Mark session completed locally
-      setCompletedSessions((prev) => ({
-        ...prev,
-        [activeSession.sessionId]: true,
-      }));
+      }).catch((e) => console.warn('Feedback background sync warning:', e));
 
       // 3. POST /api/adapt
       const diffMs = new Date(examDate).getTime() - Date.now();
@@ -209,17 +300,21 @@ export default function PlanPage() {
         },
         feedback: status,
         daysRemaining,
-        hoursPerDay: Number(hoursPerDay),
+        hoursPerDay: Number(hoursPerDay) || 3,
       });
 
       if (adaptRes && adaptRes.days && adaptRes.days.length > 0) {
-        setPlan({
+        const adaptedPlan: AiPlan = {
           summary: adaptRes.summary,
           days: adaptRes.days,
-        });
+        };
+        setPlan(adaptedPlan);
+        lucentStorage.savePlan(adaptedPlan);
 
         if (adaptRes.adaptation) {
-          setAdaptationData(adaptRes.adaptation as AdaptationDetails);
+          const adaptDetails = adaptRes.adaptation as AdaptationDetails;
+          setAdaptationData(adaptDetails);
+          lucentStorage.saveAdaptation(adaptDetails);
         }
 
         // 4. Show Adaptation Screen
@@ -231,7 +326,7 @@ export default function PlanPage() {
       }
     } catch (err: any) {
       console.error('Feedback & adaptation failed:', err);
-      showToast("Lucent couldn't adapt your plan right now. Try again.");
+      showToast("Feedback recorded. Lucent couldn't adapt the schedule right now.");
       setActiveModal('none');
     } finally {
       setIsAdapting(false);
@@ -308,7 +403,7 @@ export default function PlanPage() {
               onClick={handleGeneratePlan}
               disabled={isLoading || isAdapting}
               className={styles.primaryBtn}
-              style={{ padding: '8px 16px', fontSize: '13px' }}
+              style={{ padding: '8px 16px', fontSize: '13px', opacity: (isLoading || isAdapting) ? 0.6 : 1 }}
             >
               <span>↻</span>&nbsp;
               <span>{isLoading ? 'Building...' : 'Regenerate Plan'}</span>
@@ -447,6 +542,7 @@ export default function PlanPage() {
             <button
               type="button"
               onClick={handleGeneratePlan}
+              disabled={isLoading}
               className={styles.primaryBtn}
             >
               Build My Plan →
@@ -455,8 +551,26 @@ export default function PlanPage() {
         </section>
       )}
 
+      {/* Empty State: If no plan is available */}
+      {!isLoading && !showSetup && (!plan || !plan.days || plan.days.length === 0) && (
+        <div className={styles.emptyStateCard}>
+          <div className={styles.emptyStateIcon}>📅</div>
+          <h2 className={styles.emptyStateTitle}>No Study Plan Yet</h2>
+          <p className={styles.emptyStateDesc}>
+            Configure your exam target, available hours, and confidence levels to create your personalized adaptive study schedule.
+          </p>
+          <button
+            type="button"
+            onClick={() => setShowSetup(true)}
+            className={styles.primaryBtn}
+          >
+            Configure & Build Plan →
+          </button>
+        </div>
+      )}
+
       {/* Main Plan View */}
-      {!isLoading && plan && (
+      {!isLoading && plan && plan.days && plan.days.length > 0 && (
         <>
           {/* AI Explanation Banner */}
           {plan.summary && (
@@ -519,6 +633,7 @@ export default function PlanPage() {
                             className={styles.taskLeft}
                             onClick={() => toggleSession(sessionKey)}
                             style={{ cursor: 'pointer' }}
+                            title={isDone ? 'Mark incomplete' : 'Mark completed'}
                           >
                             <div
                               style={{
@@ -713,6 +828,7 @@ export default function PlanPage() {
                 {/* 1. Got it -> understood */}
                 <button
                   type="button"
+                  disabled={isAdapting}
                   onClick={() => handleFeedbackSelect('understood')}
                   className={styles.feedbackOption}
                 >
@@ -730,6 +846,7 @@ export default function PlanPage() {
                 {/* 2. Need more practice -> needs_practice */}
                 <button
                   type="button"
+                  disabled={isAdapting}
                   onClick={() => handleFeedbackSelect('needs_practice')}
                   className={styles.feedbackOption}
                 >
@@ -747,6 +864,7 @@ export default function PlanPage() {
                 {/* 3. I'm stuck -> struggled */}
                 <button
                   type="button"
+                  disabled={isAdapting}
                   onClick={() => handleFeedbackSelect('struggled')}
                   className={styles.feedbackOption}
                 >

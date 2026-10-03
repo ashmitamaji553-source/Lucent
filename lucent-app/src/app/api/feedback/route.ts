@@ -4,6 +4,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { userRepo, studyPlanRepo, topicRepo, coverageRepo } from '@/lib/db/repositories';
 import { db } from '@/lib/db';
+import { planStore } from '@/services/plan-store';
 
 export const dynamic = 'force-dynamic';
 
@@ -64,6 +65,15 @@ export async function POST(req: NextRequest) {
     if (matchingTopic) {
       await coverageRepo.upsert(matchingTopic.id, score, user.id);
     }
+
+    // 3. Persist feedback and session in plan store
+    planStore.addFeedback({
+      sessionId: sessionId || `sess_${Date.now()}`,
+      subject: cleanSubject,
+      topic: cleanTopic,
+      status: status as FeedbackStatus,
+      timestamp: new Date().toISOString(),
+    });
 
     return NextResponse.json({
       success: true,
