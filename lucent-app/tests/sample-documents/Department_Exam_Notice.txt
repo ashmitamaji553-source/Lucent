@@ -1,0 +1,33 @@
+DEPARTMENT OF COMPUTER SCIENCE & INFORMATION TECHNOLOGY
+OFFICIAL NOTICE & ACADEMIC CIRCULAR
+
+Ref: CS/EXAM/2026/089
+Date: October 10, 2026
+
+ATTENTION: All 2nd and 3rd Year B.Tech Students
+
+This is to notify all registered students regarding the upcoming mid-semester examinations, project submissions, and course assessment deadlines for the current term:
+
+1. Mid-Term Examination: Operating Systems (CS202)
+   Date: 2026-10-25
+   Time: 10:00 AM to 12:00 PM
+   Venue: Examination Hall 3 & 4
+   Instructions: All students must bring their university ID and admit card. Calculators are allowed.
+
+2. Project Assignment 1 Submission: Data Structures (CS201)
+   Date: 2026-10-18
+   Time: 11:59 PM
+   Instructions: Submit repository link and documentation via the student portal. Late submissions will attract a 10% penalty per day.
+
+3. Departmental Quiz: DBMS (CS203)
+   Date: 2026-10-15
+   Time: 02:00 PM to 03:00 PM
+   Venue: Online Lab Portal
+   Instructions: Mandatory 20-minute multiple-choice quiz covering Relational Algebra and Normalization.
+
+General Instructions:
+Attendance is strictly mandatory for all scheduled assessments. Students facing medical contingencies must submit medical certificates to the Dean's Office within 48 hours.
+
+By Order,
+Controller of Examinations
+Department of Computer Science

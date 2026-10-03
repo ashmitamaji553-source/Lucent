@@ -53,6 +53,11 @@ export interface Document {
   metadata?: {
     topicsFound?: string[];
     deadlinesFound?: string[];
+    unitsFound?: string[];
+    objectivesFound?: string[];
+    terminologyFound?: string[];
+    questionsCount?: number;
+    feedbackMessages?: string[];
     term?: string;
     year?: number;
     pageCount?: number;
@@ -103,6 +108,9 @@ export interface PYQQuestion {
   term?: string;
   questionText: string;
   marks?: number;
+  difficulty?: DifficultyLevel;
+  questionType?: string;
+  topicName?: string;
   frequencyWeight: number; // 1 - 5
 }
 
@@ -116,6 +124,8 @@ export interface Deadline {
   description: string;
   dueDate: string; // ISO date string
   date?: string | Date; // optional alias for UI backwards compatibility
+  time?: string;
+  instructions?: string;
   type: DeadlineType;
   status: 'pending' | 'completed';
   createdAt: string;

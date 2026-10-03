@@ -1,0 +1,22 @@
+Subject: DBMS
+Unit 2: Relational Model and Normalization
+Lecture Notes by Prof. R. Sharma
+
+Chapter Overview:
+This unit covers the foundational theoretical principles of relational databases, relational algebra, and database normalization techniques to eliminate data anomalies.
+
+Key Concepts:
+- Relational Schema: Attributes, Tuples, Candidate Keys, Primary Keys, Foreign Keys
+- Integrity Constraints: Entity integrity, Referential integrity, Domain constraints
+- Functional Dependencies: Full functional dependency, Partial dependency, Transitive dependency
+- Normal Forms:
+  - First Normal Form (1NF): Eliminates repeating groups and ensures attribute values are atomic.
+  - Second Normal Form (2NF): In 1NF and all non-prime attributes are fully functionally dependent on the primary key.
+  - Third Normal Form (3NF): In 2NF and no non-prime attribute is transitively dependent on candidate keys.
+  - Boyce-Codd Normal Form (BCNF): For every functional dependency X -> Y, X must be a superkey.
+- Relational Algebra Operations: Selection, Projection, Cartesian Product, Natural Join, Theta Join
+
+Important Definitions:
+Candidate key: A minimal superkey that uniquely identifies tuples in a relation.
+Prime attribute: An attribute that is a member of any candidate key of the relation.
+Lossless Join Decomposition: Ensures that decomposing relation R into R1 and R2 preserves the original information without spurious tuples.

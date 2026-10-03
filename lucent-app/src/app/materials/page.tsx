@@ -17,10 +17,14 @@ export default function MaterialsPage() {
     if (!newFiles || newFiles.length === 0) return;
     showToast(`${newFiles.length} file(s) uploaded — analyzing...`);
     try {
-      await uploadFiles(newFiles, activeCategory);
-      showToast('Files analyzed and added to curriculum!');
-    } catch {
-      showToast('Files uploaded successfully.');
+      const res = await uploadFiles(newFiles, activeCategory);
+      if (res && res.feedback && res.feedback.length > 0) {
+        showToast(res.feedback.join(' '));
+      } else {
+        showToast('Files analyzed and added to curriculum!');
+      }
+    } catch (err: any) {
+      showToast(err.message || 'Upload failed. Please check the file and try again.');
     } finally {
       setActiveCategory('Other');
     }

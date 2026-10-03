@@ -1,34 +1,189 @@
 // src/services/document-processor.ts
-// Document extraction, parsing, and classification pipeline
+// Complete Phase 2 Smart Upload Pipeline: Validate -> Store -> Extract -> Classify -> AI Structure -> Persist -> Feedback
+
+import fs from 'fs';
+import path from 'path';
 import { Document, DocumentType } from '../lib/models/types';
-import { documentRepo, courseRepo, deadlineRepo } from '../lib/db/repositories';
-import { topicService } from './topic-service';
-import { aiService } from './ai-service';
+import { documentRepo } from '../lib/db/repositories';
+import { textExtractor, TextExtractor } from './text-extractor';
+import { documentClassifier } from './classifier';
+import { syllabusExtractor } from './syllabus-extractor';
+import { pyqExtractor } from './pyq-extractor';
+import { noticeExtractor } from './notice-extractor';
+import { notesExtractor } from './notes-extractor';
 
 export interface ProcessedDocumentResult {
   document: Document;
-  extractedTopics: string[];
-  extractedDeadlines: Array<{ title: string; date: string; type: 'Quiz' | 'Assignment' | 'Exam'; description: string }>;
+  detectedType: DocumentType;
+  feedback: string[];
   summary: string;
+  topicsFound: string[];
+  deadlinesFound: string[];
 }
 
 export class DocumentProcessor {
-  /**
-   * Detects document type from filename or header text if not explicitly specified.
-   */
-  public detectDocumentType(filename: string, content?: string): DocumentType {
-    const f = filename.toLowerCase();
-    const c = (content || '').toLowerCase();
+  private uploadsDir: string;
 
-    if (f.includes('syllabus') || c.includes('course outline') || c.includes('syllabus')) return 'Syllabus';
-    if (f.includes('pyq') || f.includes('past') || f.includes('exam') || c.includes('previous year') || c.includes('question paper')) return 'PYQs';
-    if (f.includes('notice') || f.includes('circular') || c.includes('deadline') || c.includes('notification')) return 'Notice';
-    if (f.includes('note') || f.includes('unit') || f.includes('chapter') || c.includes('lecture')) return 'Notes';
-    return 'Other';
+  constructor() {
+    this.uploadsDir = path.join(process.cwd(), '.lucent', 'uploads');
+  }
+
+  private ensureUploadsDir() {
+    if (!fs.existsSync(this.uploadsDir)) {
+      fs.mkdirSync(this.uploadsDir, { recursive: true });
+    }
   }
 
   /**
-   * Processes an uploaded document through the complete extraction pipeline.
+   * Main entrypoint for processing an uploaded document through the complete pipeline.
+   */
+  public async processUpload(
+    filename: string,
+    fileBuffer: Buffer,
+    declaredMime?: string,
+    overrideType?: DocumentType
+  ): Promise<ProcessedDocumentResult> {
+    // -----------------------------------------------------------------
+    // 1. Validate & Store raw file
+    // -----------------------------------------------------------------
+    this.ensureUploadsDir();
+
+    // Check empty document immediately
+    if (!fileBuffer || fileBuffer.length === 0) {
+      throw new Error(`The uploaded file "${filename}" is empty. Please check the file and try again.`);
+    }
+
+    if (fileBuffer.length > TextExtractor.MAX_FILE_SIZE) {
+      throw new Error(`File "${filename}" exceeds the maximum upload limit of 25MB.`);
+    }
+
+    // Initial placeholder doc in database with 'Uploading'/'Processing'
+    const doc = await documentRepo.create({
+      userId: 'user_1',
+      courseId: 'c_ds',
+      name: filename,
+      type: overrideType && overrideType !== 'Other' ? overrideType : 'Other',
+      fileSize: fileBuffer.length,
+      mimeType: declaredMime || 'application/octet-stream',
+      status: 'Processing',
+    });
+
+    try {
+      // Persist raw binary to disk
+      const sanitizedName = filename.replace(/[^a-zA-Z0-9.-]/g, '_');
+      const diskPath = path.join(this.uploadsDir, `${doc.id}_${sanitizedName}`);
+      await fs.promises.writeFile(diskPath, fileBuffer);
+
+      // -----------------------------------------------------------------
+      // 2. Extract Text
+      // -----------------------------------------------------------------
+      const extracted = await textExtractor.extractText(filename, fileBuffer, declaredMime);
+      const rawText = extracted.text;
+
+      // -----------------------------------------------------------------
+      // 3. Classify Document (Content is primary signal)
+      // -----------------------------------------------------------------
+      let docType: DocumentType;
+      if (overrideType && overrideType !== 'Other') {
+        docType = overrideType;
+      } else {
+        const classification = await documentClassifier.classify(rawText, filename);
+        docType = classification.type;
+      }
+
+      // Update document with detected type
+      await documentRepo.updateStatus(doc.id, 'Processing', {
+        pageCount: extracted.pageCount,
+      });
+
+      // -----------------------------------------------------------------
+      // 4. AI Structure Extraction & 5. Save Structured Data
+      // -----------------------------------------------------------------
+      let feedback: string[] = [];
+      let summary = '';
+      let topicsFound: string[] = [];
+      let deadlinesFound: string[] = [];
+      let finalCourseId = doc.courseId;
+
+      switch (docType) {
+        case 'Syllabus': {
+          const res = await syllabusExtractor.extractAndStore(rawText, filename, doc.id);
+          finalCourseId = res.course.id;
+          feedback = res.feedback;
+          summary = `Curriculum extracted for ${res.course.name}: ${res.topicCount} topics across ${res.unitsCount} units.`;
+          topicsFound = res.learningObjectives.concat(res.importantTerminology);
+          break;
+        }
+
+        case 'PYQs': {
+          const res = await pyqExtractor.extractAndStore(rawText, filename, doc.id);
+          finalCourseId = res.course.id;
+          feedback = res.feedback;
+          summary = `PYQ exam paper indexed for ${res.course.name}: ${res.questionsCount} questions processed.`;
+          topicsFound = res.questions.map((q) => q.topicName || q.questionText.slice(0, 30)).filter(Boolean);
+          break;
+        }
+
+        case 'Notice': {
+          const res = await noticeExtractor.extractAndStore(rawText, filename, doc.id);
+          feedback = res.feedback;
+          summary = `Academic notice parsed: ${res.deadlinesCount} upcoming deadlines scheduled.`;
+          deadlinesFound = res.deadlines.map((d) => `${d.title} (${d.date || d.dueDate.slice(0, 10)})`);
+          break;
+        }
+
+        case 'Notes': {
+          const res = await notesExtractor.extractAndStore(rawText, filename, doc.id);
+          finalCourseId = res.course.id;
+          feedback = res.feedback;
+          summary = res.summary || `Lecture notes indexed for ${res.course.name}.`;
+          break;
+        }
+
+        default: {
+          // Other academic material
+          feedback = ['Document processed and indexed.'];
+          summary = `Analyzed ${filename} for academic reference.`;
+          break;
+        }
+      }
+
+      // -----------------------------------------------------------------
+      // 6. Complete Document record with 'Processed'
+      // -----------------------------------------------------------------
+      const updatedDoc = await documentRepo.updateStatus(doc.id, 'Processed', {
+        topicsFound,
+        deadlinesFound,
+        feedbackMessages: feedback,
+        pageCount: extracted.pageCount,
+        year: new Date().getFullYear(),
+      });
+
+      if (updatedDoc) {
+        updatedDoc.type = docType;
+        updatedDoc.courseId = finalCourseId;
+        updatedDoc.rawText = rawText.slice(0, 6000);
+        updatedDoc.extractedSummary = summary;
+      }
+
+      return {
+        document: updatedDoc || doc,
+        detectedType: docType,
+        feedback,
+        summary,
+        topicsFound,
+        deadlinesFound,
+      };
+    } catch (err: any) {
+      // Mark document as Error in DB
+      await documentRepo.updateStatus(doc.id, 'Error');
+      console.error(`Document pipeline error for "${filename}":`, err);
+      throw err;
+    }
+  }
+
+  /**
+   * Backward-compatibility helper for legacy method signature.
    */
   public async processDocument(
     docId: string,
@@ -36,96 +191,8 @@ export class DocumentProcessor {
     filename: string,
     explicitType?: DocumentType
   ): Promise<ProcessedDocumentResult> {
-    const rawText = typeof fileBuffer === 'string' ? fileBuffer : fileBuffer.toString('utf-8');
-    const detectedType = explicitType && explicitType !== 'Other'
-      ? explicitType
-      : this.detectDocumentType(filename, rawText);
-
-    await documentRepo.updateStatus(docId, 'Processing');
-
-    // Step 1: AI / Heuristic Extraction
-    const extractionPrompt = `
-Analyze this academic study material (${filename}, type: ${detectedType}).
-Raw content extract:
-"""
-${rawText.slice(0, 3000)}
-"""
-
-Extract the following in JSON format:
-{
-  "courseName": "e.g. Data Structures or DBMS",
-  "summary": "1-2 sentence overview of what this document covers",
-  "topics": ["list", "of", "topics", "found"],
-  "deadlines": [
-    { "title": "name", "date": "YYYY-MM-DD", "type": "Quiz/Assignment/Exam", "description": "details" }
-  ]
-}
-`;
-
-    let aiResult: {
-      courseName?: string;
-      summary?: string;
-      topics?: string[];
-      deadlines?: Array<{ title: string; date: string; type: 'Quiz' | 'Assignment' | 'Exam'; description: string }>;
-    } = {};
-
-    try {
-      aiResult = await aiService.generateStructuredJson(extractionPrompt);
-    } catch {
-      aiResult = {
-        courseName: filename.includes('DS') ? 'Data Structures' : filename.includes('DBMS') ? 'DBMS' : 'Data Structures',
-        summary: `Analyzed ${filename} for academic concepts and curriculum milestones.`,
-        topics: [filename.replace(/\.[^/.]+$/, '').replace(/_/g, ' ')],
-        deadlines: [],
-      };
-    }
-
-    // Step 2: Associate with or find course
-    const courseName = aiResult.courseName || 'Data Structures';
-    let course = courseRepo.getByName(courseName);
-    if (!course) {
-      course = await courseRepo.create({
-        userId: 'user_1',
-        name: courseName,
-        code: courseName.slice(0, 3).toUpperCase() + '101',
-        term: 'Fall 2026',
-      });
-    }
-
-    // Step 3: Extract & ingest topics if syllabus or notes
-    const extractedTopics = aiResult.topics || [];
-    if (extractedTopics.length > 0 && (detectedType === 'Syllabus' || detectedType === 'Notes')) {
-      await topicService.ingestTopicsFromDocument(course.id, extractedTopics);
-    }
-
-    // Step 4: Record any deadlines found in notices
-    const extractedDeadlines = aiResult.deadlines || [];
-    for (const dl of extractedDeadlines) {
-      await deadlineRepo.create({
-        userId: 'user_1',
-        courseId: course.id,
-        documentId: docId,
-        title: dl.title,
-        description: dl.description || `Extracted from ${filename}`,
-        dueDate: new Date(dl.date).toISOString(),
-        type: dl.type || 'Quiz',
-        status: 'pending',
-      });
-    }
-
-    // Step 5: Mark document as Processed
-    const updatedDoc = await documentRepo.updateStatus(docId, 'Processed', {
-      topicsFound: extractedTopics,
-      deadlinesFound: extractedDeadlines.map((d) => `${d.title} (${d.date})`),
-      year: new Date().getFullYear(),
-    });
-
-    return {
-      document: updatedDoc!,
-      extractedTopics,
-      extractedDeadlines,
-      summary: aiResult.summary || 'Document extracted and indexed successfully.',
-    };
+    const buf = typeof fileBuffer === 'string' ? Buffer.from(fileBuffer) : fileBuffer;
+    return this.processUpload(filename, buf, undefined, explicitType);
   }
 }
 

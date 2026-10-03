@@ -23,7 +23,10 @@ interface LucentContextType {
   refreshTopics: () => Promise<void>;
   refreshDeadlines: () => Promise<void>;
   refreshAll: () => Promise<void>;
-  uploadFiles: (files: FileList | File[], category?: string) => Promise<Document[]>;
+  uploadFiles: (
+    files: FileList | File[],
+    category?: string
+  ) => Promise<{ documents: Document[]; feedback: string[] }>;
 }
 
 const defaultSignals: SignalSummary = {
@@ -153,7 +156,10 @@ export function LucentProvider({ children }: { children: React.ReactNode }) {
     refreshAll();
   }, [refreshAll]);
 
-  const uploadFiles = async (files: FileList | File[], category?: string): Promise<Document[]> => {
+  const uploadFiles = async (
+    files: FileList | File[],
+    category?: string
+  ): Promise<{ documents: Document[]; feedback: string[] }> => {
     const uploaded = await apiClient.uploadDocuments(files, category);
     await refreshAll();
     return uploaded;

@@ -23,10 +23,14 @@ export default function MaterialUpload() {
     if (!newFiles || newFiles.length === 0) return;
     showToast(`${newFiles.length} file${newFiles.length !== 1 ? 's' : ''} uploaded — processing...`);
     try {
-      await uploadFiles(newFiles, currentCategory);
-      showToast('Document analyzed and added to knowledge tree!');
-    } catch {
-      showToast('Uploaded and processed locally.');
+      const res = await uploadFiles(newFiles, currentCategory);
+      if (res && res.feedback && res.feedback.length > 0) {
+        showToast(res.feedback.join(' '));
+      } else {
+        showToast('Document analyzed and added to curriculum!');
+      }
+    } catch (err: any) {
+      showToast(err.message || 'Upload failed. Please check the file and try again.');
     } finally {
       setCurrentCategory('Other');
     }

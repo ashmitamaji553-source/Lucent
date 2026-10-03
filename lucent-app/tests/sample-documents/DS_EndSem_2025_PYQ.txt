@@ -1,0 +1,28 @@
+UNIVERSITY OF COMPUTER SCIENCE & ENGINEERING
+END SEMESTER EXAMINATION 2025
+Course: Data Structures
+Course Code: CS201
+Time: 3 Hours
+Maximum Marks: 100
+
+Instructions:
+1. Answer all questions from Section A and any four from Section B.
+2. Clearly illustrate diagrams where applicable.
+
+SECTION A (Short Answer Questions - 5 Marks Each)
+
+Q1. Define an AVL Tree. State the balance factor condition and explain the four rotation cases (LL, RR, LR, RL) with diagrams. [5 Marks]
+
+Q2. What is the difference between an adjacency matrix and an adjacency list representation of Graphs? When is an adjacency list preferred? [5 Marks]
+
+Q3. Explain how Collision Resolution is handled in Hashing using Quadratic Probing and Double Hashing. [5 Marks]
+
+SECTION B (Detailed Analytical & Implementation Questions - 10 Marks Each)
+
+Q4. Construct an AVL Tree by inserting the following sequence of keys step by step: [15, 20, 24, 10, 13, 7, 30]. Show balance factors after each insertion and specify any rotations required. [10 Marks]
+
+Q5. Write an algorithm to find the shortest path in a weighted graph using Dijkstra's Algorithm. Trace the algorithm for a graph with 5 vertices. [10 Marks]
+
+Q6. Explain the operations on Binary Search Trees: Search, Insertion, and Deletion of a node with two children. Analyze the time complexity in best, average, and worst cases. [10 Marks]
+
+Q7. Compare Quick Sort and Merge Sort in terms of algorithmic strategy, stability, auxiliary space complexity, and worst-case performance. [10 Marks]

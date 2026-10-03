@@ -1,0 +1,30 @@
+Course Name: Operating Systems
+Course Code: CS202
+Credits: 4
+
+Course Overview & Learning Objectives:
+- Understand operating system abstractions including processes, threads, virtual memory, and file systems.
+- Master synchronization primitives (semaphores, mutexes) and deadlock avoidance mechanisms.
+- Analyze CPU scheduling algorithms and page replacement performance trade-offs.
+
+Important Terminology:
+Context switching, Process Control Block (PCB), Race condition, Semaphore, Banker's Algorithm, Thrashing, Inode, Page fault.
+
+Unit 1: Process Management & CPU Scheduling
+- Process Concepts: PCB, Process States, Context Switching
+- Threads: User-level threads, Kernel-level threads, Multithreading models
+- CPU Scheduling: FCFS, Shortest Job First (SJF), Round Robin, Multi-level feedback queues
+
+Unit 2: Concurrency & Synchronization
+- Critical Section Problem: Mutual Exclusion, Progress, Bounded Waiting
+- Synchronization Tools: Semaphores, Mutex locks, Monitors
+- Deadlocks: Deadlock Characterization, Banker's Algorithm, Deadlock Detection and Recovery
+
+Unit 3: Memory Management
+- Physical Memory: Contiguous allocation, Fragmentation, Paging, Segmentation
+- Virtual Memory: Demand Paging, Page Fault Handling, Copy-on-Write
+- Page Replacement Algorithms: FIFO, Optimal, Least Recently Used (LRU)
+
+Unit 4: Storage & File Systems
+- File System Structure: Directory implementation, File allocation methods
+- Disk Scheduling: FCFS, SCAN, C-SCAN, LOOK

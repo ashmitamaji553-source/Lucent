@@ -28,7 +28,10 @@ export const apiClient = {
     return data.documents || [];
   },
 
-  async uploadDocuments(files: FileList | File[], category: string = 'Other'): Promise<Document[]> {
+  async uploadDocuments(
+    files: FileList | File[],
+    category: string = 'Other'
+  ): Promise<{ documents: Document[]; feedback: string[] }> {
     const formData = new FormData();
     formData.append('category', category);
     Array.from(files).forEach((f) => formData.append('files', f));
@@ -39,7 +42,10 @@ export const apiClient = {
     });
     const data = await res.json();
     if (!data.success) throw new Error(data.error || 'Upload failed');
-    return data.documents;
+    return {
+      documents: data.documents || [],
+      feedback: data.feedback || [],
+    };
   },
 
   async deleteDocument(id: string): Promise<boolean> {

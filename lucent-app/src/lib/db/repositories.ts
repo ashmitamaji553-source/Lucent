@@ -398,9 +398,9 @@ export const compositeRepo = {
       : 68;
 
     return {
-      missingTopics: missing || 6,
-      updatedNotices: updatedNotices || 2,
-      highPriorityTopics: highPriority || 4,
+      missingTopics: missing,
+      updatedNotices: updatedNotices,
+      highPriorityTopics: highPriority,
       overallReadiness: overallReadiness || 68,
     };
   },
