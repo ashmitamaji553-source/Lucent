@@ -1,81 +1,124 @@
 /*
-  Topbar — no glassmorphism, no blur
-  Clean ruled line. Search is a plain underline input, not a pill.
-  Profile area minimal.
+  Topbar — Vercel & SpaceX precision header.
+  - Hairline dividing border with page surface.
+  - Subtle breadcrumbs, keyboard shortcut hint, and real-time engine telemetry.
+  - Integrated search dropdown.
 */
+
 .topbar {
   height: 56px;
-  padding: 0 32px;
+  padding: 0 40px;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   border-bottom: 1px solid var(--sand);
-  background: var(--cream);
+  background: var(--paper);
   position: sticky;
   top: 0;
-  z-index: 10;
-  flex: none;
-  gap: 20px;
+  z-index: 15;
+  gap: 24px;
 }
 
-/* Search — underline style, not pill */
-.search {
+/* Left context breadcrumbs */
+.leftContext {
   display: flex;
   align-items: center;
   gap: 8px;
-  width: min(380px, 44vw);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+}
+
+.contextNode {
   color: var(--stone);
-  border-bottom: 1px solid var(--sand);
-  padding: 4px 0;
-  transition: border-color 0.15s;
+  font-weight: 500;
+}
+
+.contextSep {
+  color: var(--sand);
+}
+
+.contextCurrent {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+/* Search Wrapper & Input */
+.searchWrapper {
+  position: relative;
+  width: min(420px, 35vw);
+}
+
+.search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  background: var(--cream);
+  border: 1px solid var(--sand-light);
+  border-radius: var(--r-xs);
+  padding: 6px 12px;
+  transition: all 0.14s ease;
 }
 
 .search:focus-within {
-  border-bottom-color: var(--ink);
+  border-color: var(--ink);
+  background: #FFF;
+  box-shadow: 0 0 0 1px var(--ink);
 }
 
-.search svg {
+.searchIcon {
+  color: var(--stone);
   flex: none;
-  opacity: 0.5;
 }
 
 .searchInput {
-  border: 0;
-  outline: 0;
+  border: none;
+  outline: none;
   background: transparent;
   width: 100%;
   color: var(--ink);
-  font-size: 13.5px;
+  font-size: 13px;
+  font-family: var(--sans);
 }
 
 .searchInput::placeholder {
   color: var(--stone);
-  font-size: 13.5px;
+  font-size: 12.5px;
 }
 
-.searchWrapper {
-  position: relative;
+.searchKbd {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--stone);
+  background: rgba(36, 25, 21, 0.05);
+  border: 1px solid var(--sand);
+  border-radius: var(--r-xs);
+  padding: 1px 5px;
+  line-height: 1.2;
 }
 
+/* Results Dropdown */
 .resultsDropdown {
   position: absolute;
-  top: calc(100% + 8px);
+  top: calc(100% + 6px);
   left: 0;
   width: 100%;
   min-width: 320px;
-  background: var(--cream, #FFFDF8);
-  border: 1px solid var(--sand, #e6ded3);
-  border-radius: 8px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-  padding: 6px 0;
+  background: var(--paper);
+  border: 1px solid var(--sand);
+  border-radius: var(--r-xs);
+  box-shadow: var(--shadow-subtle);
+  padding: 4px 0;
   z-index: 50;
   overflow: hidden;
 }
 
 .resultItem {
   display: block;
-  padding: 8px 14px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
-  transition: background 0.15s;
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--sand-light);
+  transition: background 0.12s ease;
   text-decoration: none;
 }
 
@@ -84,11 +127,11 @@
 }
 
 .resultItem:hover {
-  background: rgba(0, 0, 0, 0.04);
+  background: #FAF7F2;
 }
 
 .resultTitle {
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 500;
   color: var(--ink);
 }
@@ -99,52 +142,133 @@
   margin-top: 2px;
 }
 
-/* Profile — right side, very quiet */
-.profile {
-  margin-left: auto;
+/* Right section */
+.rightSection {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 16px;
 }
 
+/* Engine telemetry badge */
+.systemStatus {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--sage-subtle);
+  border: 1px solid rgba(109, 139, 104, 0.25);
+  padding: 4px 8px;
+  border-radius: var(--r-xs);
+}
+
+.statusPing {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--sage);
+}
+
+.statusLabel {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--sage);
+  letter-spacing: 0.08em;
+}
+
+/* Icon button */
 .iconBtn {
   color: var(--stone);
   display: flex;
   align-items: center;
-  transition: color 0.12s;
-  padding: 2px;
+  justify-content: center;
+  padding: 6px;
+  border-radius: var(--r-xs);
+  position: relative;
+  transition: color 0.14s ease;
 }
 
 .iconBtn:hover {
   color: var(--ink);
 }
 
-/* Avatar — square, not circle. More distinctive. */
+.unreadDot {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 5px;
+  height: 5px;
+  background: var(--blush);
+  border-radius: 50%;
+}
+
+.profileDivider {
+  width: 1px;
+  height: 20px;
+  background: var(--sand);
+}
+
+/* Profile button */
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
 .avatar {
   width: 28px;
   height: 28px;
-  border-radius: var(--r-sm);
-  background: var(--terracotta);
-  color: #FBF0EA;
+  border-radius: var(--r-xs);
+  background: var(--bark);
+  color: #FAF5F0;
   display: grid;
   place-items: center;
-  font-size: 12px;
+  font-family: var(--mono);
+  font-size: 11px;
   font-weight: 600;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.05em;
+}
+
+.profileMeta {
+  display: flex;
+  flex-direction: column;
 }
 
 .name {
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 500;
-  color: var(--clay);
+  color: var(--ink);
+  line-height: 1.2;
 }
 
-@media (max-width: 900px) {
-  .topbar { padding: 0 20px; }
+.role {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--stone);
+  letter-spacing: 0.06em;
 }
 
-@media (max-width: 600px) {
-  .topbar { padding: 0 16px; gap: 12px; }
-  .search { width: 100%; }
-  .name { display: none; }
+.chevron {
+  color: var(--stone);
+}
+
+/* Responsive adjustments */
+@media (max-width: 960px) {
+  .topbar {
+    padding: 0 20px;
+  }
+  .leftContext, .systemStatus {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .searchWrapper {
+    width: auto;
+    flex: 1;
+  }
+  .profileMeta, .chevron, .profileDivider {
+    display: none;
+  }
 }

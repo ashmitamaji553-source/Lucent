@@ -1,48 +1,91 @@
-/* Recent uploads — thin bordered panel with right edge accent */
+/* Recent Dispatches Feed */
 .panel {
-  border-top: 2px solid var(--ink);
-  padding: 24px 0 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.panelHeader {
+  margin-bottom: 24px;
+}
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--stone);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.indexNum {
+  color: var(--terracotta);
+  font-weight: 600;
 }
 
 .title {
-  font-size: 16px;
-  font-weight: 600;
+  font-family: var(--serif);
+  font-size: 24px;
   color: var(--ink);
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
 }
 
 .subtext {
-  font-size: 12px;
-  color: var(--stone);
-  margin: 4px 0 16px;
+  font-size: 13.5px;
+  color: var(--clay);
+  margin-top: 4px;
+  line-height: 1.5;
 }
 
-.file {
+.feed {
   display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 9px 0;
-  border-bottom: 1px solid var(--sand);
-}
-
-.file:last-child { border-bottom: none; }
-
-.ficon {
-  width: 26px;
-  height: 26px;
+  flex-direction: column;
+  background: var(--paper);
+  border: 1px solid var(--sand-light);
   border-radius: var(--r-sm);
-  background: var(--blush-subtle);
-  display: grid;
-  place-items: center;
-  color: var(--rose);
-  font-size: 8px;
-  font-weight: 700;
-  flex: none;
 }
 
-.finfo { flex: 1; min-width: 0; }
+.item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--sand-light);
+  transition: background 0.12s ease;
+}
 
-.fname {
+.item:last-child {
+  border-bottom: none;
+}
+
+.item:hover {
+  background: #FAF7F2;
+}
+
+.itemSeq {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--stone);
+  font-weight: 600;
+  margin-top: 3px;
+}
+
+.itemContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.itemTitleRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.itemName {
   font-size: 13px;
   font-weight: 500;
   color: var(--ink);
@@ -51,17 +94,33 @@
   white-space: nowrap;
 }
 
-.fmeta {
-  font-size: 11px;
-  color: var(--stone);
-  margin-top: 2px;
+.itemType {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--terracotta);
+  background: rgba(156, 88, 59, 0.08);
+  padding: 1px 5px;
+  border-radius: var(--r-xs);
+  flex: none;
 }
 
-/* Small dot indicator — no pill badge */
-.dot {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: var(--sage);
-  flex: none;
+.itemMeta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  color: var(--stone);
+}
+
+.metaDot {
+  color: var(--sand);
+  font-size: 8px;
+}
+
+.itemStatus {
+  color: var(--sage);
+  font-weight: 600;
+  font-size: 9px;
+  letter-spacing: 0.05em;
 }

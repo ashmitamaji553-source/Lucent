@@ -1,7 +1,9 @@
 .app {
   display: flex;
+  height: 100vh;
   min-height: 100vh;
   overflow: hidden;
+  position: relative;
 }
 
 .mainWrapper {
@@ -9,13 +11,16 @@
   min-width: 0;
   display: flex;
   flex-direction: column;
+  height: 100vh;
   overflow: hidden;
 }
 
-/* Clean background — no gradient blob */
+/* Sunlit study background shines softly through transparent main */
 .main {
   flex: 1;
   overflow-y: auto;
-  background: var(--cream);
+  overflow-x: hidden;
+  background: transparent;
   position: relative;
+  z-index: 1;
 }

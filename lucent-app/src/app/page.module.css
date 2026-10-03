@@ -1,62 +1,89 @@
 /*
-  Dashboard page layout.
-  Content sections use padding + ruled separators, not card containers.
-  The grid uses asymmetric ratios.
+  Dashboard Page Layout — SpaceXAI, Vercel & Trajectory Inspired.
+  - Generous whitespace and architectural alignment.
+  - Asymmetric, harmonious columns.
+  - Hairline rules replace heavy card containers.
 */
+
 .page {
-  max-width: 1320px;
+  max-width: 1360px;
   margin: 0 auto;
+  min-height: 100vh;
 }
 
-/* Main content sections get breathing room */
+/* Inner workspace padding with luxurious leading */
 .inner {
-  padding: 32px 32px 56px;
+  padding: 48px 48px 80px;
+}
+
+/* Section Header Divider */
+.sectionRule {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.sectionIndex {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--terracotta);
+  letter-spacing: 0.1em;
+}
+
+.sectionLine {
+  flex: 1;
+  height: 1px;
+  background: var(--sand);
 }
 
 /*
-  Main grid: upload (wider) / recent uploads
-  1.8fr vs 1fr — deliberately asymmetric
+  Main Grid: Material Upload (1.75fr) / Recent Dispatches (1fr)
+  Asymmetric, elegant tension.
 */
 .grid {
   display: grid;
-  grid-template-columns: 1.8fr 1fr;
-  gap: 40px;
-  margin-bottom: 40px;
+  grid-template-columns: 1.75fr 1fr;
+  gap: 48px;
+  margin-bottom: 56px;
 }
 
 /*
-  Bottom row: deadlines / coverage / quick access
-  Slightly asymmetric — deadlines gets more width
+  Bottom Grid: Deadlines (1.1fr) / Topic Coverage (1.1fr) / Quick Access (0.8fr)
 */
 .bottomGrid {
   display: grid;
-  grid-template-columns: 1.1fr 1fr 0.9fr;
-  gap: 40px;
+  grid-template-columns: 1.15fr 1.15fr 0.9fr;
+  gap: 48px;
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 1180px) {
+  .inner {
+    padding: 36px 32px 64px;
+  }
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
   .bottomGrid {
     grid-template-columns: 1fr 1fr;
+    gap: 36px;
   }
   .bottomGrid > :last-child {
     grid-column: 1 / -1;
   }
 }
 
-@media (max-width: 900px) {
-  .grid {
+@media (max-width: 720px) {
+  .inner {
+    padding: 24px 18px 48px;
+  }
+  .grid, .bottomGrid {
     grid-template-columns: 1fr;
     gap: 32px;
   }
-  .inner { padding: 24px 24px 48px; }
-}
-
-@media (max-width: 600px) {
-  .inner { padding: 20px 16px 40px; }
-  .grid { gap: 28px; }
-  .bottomGrid {
-    grid-template-columns: 1fr;
-    gap: 28px;
+  .bottomGrid > :last-child {
+    grid-column: auto;
   }
-  .bottomGrid > :last-child { grid-column: auto; }
 }

@@ -1,57 +1,92 @@
-/* Quick access — navigation list, not a card grid */
+/* Quick Access Module */
 .panel {
-  border-top: 2px solid var(--ink);
-  padding: 24px 0 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.panelHeader {
+  margin-bottom: 24px;
+}
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--stone);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.indexNum {
+  color: var(--terracotta);
+  font-weight: 600;
 }
 
 .title {
-  font-size: 14px;
-  font-weight: 600;
+  font-family: var(--serif);
+  font-size: 24px;
   color: var(--ink);
-  letter-spacing: 0.01em;
-  margin-bottom: 8px;
+  letter-spacing: -0.02em;
 }
 
-.grid {
+.subtext {
+  font-size: 13.5px;
+  color: var(--clay);
+  margin-top: 4px;
+  line-height: 1.5;
+}
+
+.linkList {
   display: flex;
   flex-direction: column;
-  gap: 0;
+  background: var(--paper);
+  border: 1px solid var(--sand-light);
+  border-radius: var(--r-sm);
 }
 
-/* Each link is a ruled text row — no card */
-.quickBtn {
-  border: none;
-  border-bottom: 1px solid var(--sand);
-  background: transparent;
-  color: var(--clay);
-  border-radius: 0;
-  padding: 10px 0;
-  text-align: left;
-  font-size: 13px;
+.linkItem {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  text-decoration: none;
-  transition: color 0.12s;
-  font-weight: 400;
-}
-
-.quickBtn:hover {
+  gap: 12px;
+  padding: 13px 18px;
+  border-bottom: 1px solid var(--sand-light);
   color: var(--ink);
+  text-decoration: none;
+  font-size: 13px;
+  transition: all 0.12s ease;
 }
 
-.quickBtn:last-child {
+.linkItem:last-child {
   border-bottom: none;
 }
 
-.quickBtn b {
-  font-size: 13px;
-  font-weight: 300;
-  color: var(--stone);
-  transition: transform 0.12s, color 0.12s;
+.linkItem:hover {
+  background: #FAF7F2;
+  color: var(--terracotta);
 }
 
-.quickBtn:hover b {
-  transform: translateX(3px);
-  color: var(--clay);
+.linkIndex {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--stone);
+  font-weight: 600;
+}
+
+.linkLabel {
+  flex: 1;
+  font-weight: 500;
+}
+
+.arrowIcon {
+  font-size: 14px;
+  color: var(--stone);
+  transition: transform 0.14s ease, color 0.14s ease;
+}
+
+.linkItem:hover .arrowIcon {
+  transform: translateX(4px);
+  color: var(--terracotta);
 }

@@ -4,6 +4,7 @@ import './globals.css';
 import styles from './layout.module.css';
 import Sidebar from '@/components/layout/Sidebar';
 import Topbar from '@/components/layout/Topbar';
+import AtmosphericBackground from '@/components/layout/AtmosphericBackground';
 import ToastProvider from '@/components/ui/ToastProvider';
 import { LucentProvider } from '@/lib/LucentContext';
 
@@ -19,6 +20,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ToastProvider>
           <LucentProvider>
             <div className={styles.app}>
+              <AtmosphericBackground />
               <Sidebar />
               <div className={styles.mainWrapper}>
                 <Topbar />

@@ -1,102 +1,257 @@
 /*
-  Sidebar — flat dark surface, no gradient
-  Nav items use left-border for active state instead of pill backgrounds
-  Compact, typographic, not decorative
+  Sidebar — Architectural Espresso Surface.
+  - Deep warm bark `#1E1210` with razor-sharp hairline borders.
+  - SpaceX / Vercel technical typography with DM Serif Display + JetBrains Mono.
+  - High precision alignment and active state indicators.
 */
+
 .sidebar {
-  width: 220px;
-  flex: none;
-  background: var(--bark);
-  color: #E8D9D2;
-  padding: 0;
+  width: 240px;
+  flex: 0 0 240px;
+  min-width: 240px;
+  background: linear-gradient(180deg, 
+    rgba(26, 13, 18, 0.86) 0%, 
+    rgba(34, 16, 24, 0.82) 50%, 
+    rgba(22, 10, 16, 0.90) 100%
+  );
+  backdrop-filter: blur(24px) saturate(150%);
+  -webkit-backdrop-filter: blur(24px) saturate(150%);
+  color: #F8ECE7;
   display: flex;
   flex-direction: column;
-  z-index: 10;
-  border-right: 1px solid rgba(255,255,255,0.06);
+  z-index: 20;
+  border-right: 1px solid rgba(239, 182, 157, 0.22);
+  box-shadow: inset -1px 0 0 rgba(255, 235, 230, 0.08), 8px 0 32px -8px rgba(32, 14, 22, 0.35);
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
+/* Brand header */
 .brand {
-  padding: 28px 20px 24px;
-  border-bottom: 1px solid rgba(255,255,255,0.07);
+  padding: 32px 24px 24px;
+  border-bottom: 1px solid rgba(222, 142, 155, 0.1);
+}
+
+.logoRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.logoMark {
+  color: var(--dusty-rose);
+  flex: none;
+  filter: drop-shadow(0 0 6px rgba(212, 129, 142, 0.35));
 }
 
 .logo {
   font-family: var(--serif);
-  font-size: 22px;
-  letter-spacing: 0.08em;
-  color: #F5EDE8;
+  font-size: 23px;
+  letter-spacing: 0.1em;
+  color: #F8EFEA;
   line-height: 1;
 }
 
-.tag {
-  font-size: 11px;
-  color: #9C7B72;
-  margin-top: 5px;
-  letter-spacing: 0.01em;
+.editionPill {
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--peach);
+  background: rgba(232, 185, 157, 0.12);
+  padding: 2px 5px;
+  border-radius: var(--r-xs);
+  letter-spacing: 0.05em;
+  margin-left: auto;
 }
 
+.tag {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 12.5px;
+  color: #A8867E;
+  letter-spacing: 0.01em;
+  line-height: 1.4;
+}
+
+/* Section Header */
+.sectionHeader {
+  padding: 20px 24px 8px;
+}
+
+.sectionTitle {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: #7D6058;
+}
+
+/* Navigation */
 .nav {
   display: flex;
   flex-direction: column;
-  padding: 12px 0;
+  padding: 4px 12px;
   flex: 1;
+  gap: 2px;
 }
 
 .navItem {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 9px 20px;
+  gap: 12px;
+  padding: 10px 14px;
   font-size: 13.5px;
   font-weight: 400;
-  color: #B09088;
+  color: #B5958C;
   text-decoration: none;
-  border-left: 2px solid transparent;
-  transition: color 0.12s, border-color 0.12s, background 0.12s;
-  letter-spacing: 0.01em;
+  border-radius: var(--r-xs);
+  position: relative;
+  transition: color 0.18s ease, background 0.18s ease, transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .navItem:hover {
-  color: #F0E4DF;
-  background: rgba(255, 255, 255, 0.04);
+  color: #FAF2EE;
+  background: rgba(255, 255, 255, 0.055);
+  transform: translateX(2px);
 }
 
-/* Active: left border accent, not pill background */
-.active {
-  color: #F0E4DF;
-  border-left-color: var(--blush);
-  background: rgba(212, 129, 142, 0.1);
+.itemIndex {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: #70544C;
+  transition: color 0.14s ease;
+  width: 14px;
 }
 
-.ico {
+.navItem:hover .itemIndex {
+  color: #A8867E;
+}
+
+.itemIcon {
+  font-size: 13px;
+  opacity: 0.75;
   width: 16px;
   text-align: center;
-  flex: none;
-  font-size: 13px;
-  opacity: 0.7;
 }
 
-.divide {
-  height: 1px;
-  background: rgba(255, 255, 255, 0.07);
-  margin: 8px 20px;
+.itemLabel {
+  letter-spacing: 0.01em;
+  flex: 1;
 }
 
-.bottom {
-  padding-bottom: 12px;
+/* Active State — precision left highlight */
+.active {
+  color: #FAF2EE;
+  background: rgba(212, 129, 142, 0.16);
+  font-weight: 500;
 }
 
-/* Tablet — icon-only, labels hidden */
-@media (max-width: 900px) {
-  .sidebar { width: 56px; }
-  .brand { padding: 20px 0 16px; text-align: center; }
-  .logo { font-size: 14px; letter-spacing: 0.04em; }
-  .tag { display: none; }
-  .navItem { padding: 10px; justify-content: center; }
-  .navItem span:not(.ico) { display: none; }
-  .divide { margin: 8px 10px; }
+.active .itemIndex {
+  color: var(--blush);
 }
 
-@media (max-width: 600px) {
-  .sidebar { display: none; }
+.activePill {
+  width: 4px;
+  height: 14px;
+  background: var(--dusty-rose);
+  border-radius: 1px;
+}
+
+/* Footer & Telemetry Widget */
+.footer {
+  padding: 16px 12px 20px;
+  border-top: 1px solid rgba(222, 142, 155, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.termWidget {
+  background: rgba(0, 0, 0, 0.18);
+  border: 1px solid rgba(222, 142, 155, 0.08);
+  border-radius: var(--r-xs);
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.termRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.termLabel {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  color: #A0827B;
+}
+
+.termStatus {
+  font-family: var(--mono);
+  font-size: 8.5px;
+  color: var(--dusty-rose);
+  font-weight: 600;
+}
+
+.termProgress {
+  height: 3px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: var(--r-none);
+  overflow: hidden;
+}
+
+.termProgressBar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--dusty-rose), var(--coral));
+}
+
+.termMeta {
+  font-family: var(--mono);
+  font-size: 8.5px;
+  color: #7D6058;
+  letter-spacing: 0.06em;
+}
+
+.footerNav {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Tablet adjustments */
+@media (max-width: 960px) {
+  .sidebar {
+    width: 64px;
+  }
+  .brand {
+    padding: 24px 0 16px;
+    text-align: center;
+  }
+  .logoRow {
+    justify-content: center;
+  }
+  .logo, .editionPill, .tag, .sectionHeader, .itemIndex, .itemLabel, .activePill, .termWidget {
+    display: none;
+  }
+  .navItem {
+    justify-content: center;
+    padding: 12px 0;
+  }
+  .itemIcon {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 640px) {
+  .sidebar {
+    display: none;
+  }
 }

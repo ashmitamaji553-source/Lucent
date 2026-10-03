@@ -1,4 +1,3 @@
-// src/components/dashboard/UpcomingDeadlines.tsx
 'use client';
 import { getDaysUntil, getDateLabel } from '@/lib/mockData';
 import { useLucent } from '@/lib/LucentContext';
@@ -9,25 +8,35 @@ export default function UpcomingDeadlines() {
 
   return (
     <article className={styles.panel}>
-      <h2 className={styles.title}>Upcoming Deadlines</h2>
+      <div className={styles.panelHeader}>
+        <div className={styles.eyebrow}>
+          <span className={styles.indexNum}>04</span>
+          <span>CRITICAL TIMELINES</span>
+        </div>
+        <h2 className={styles.title}>Upcoming Deadlines</h2>
+        <p className={styles.subtext}>Examinations, project submissions, and viva milestones.</p>
+      </div>
 
-      {deadlines.slice(0, 3).map((dl) => {
-        const { month, day } = getDateLabel(dl.dueDate);
-        const daysUntil = getDaysUntil(dl.dueDate);
-        return (
-          <div key={dl.id} className={styles.deadline}>
-            <div className={styles.date}>
-              <span>{month}</span>
-              <b>{day}</b>
+      <div className={styles.list}>
+        {deadlines.slice(0, 4).map((dl) => {
+          const dateVal = (dl as any).dueDate || (dl as any).date;
+          const { month, day } = getDateLabel(dateVal);
+          const daysUntil = getDaysUntil(dateVal);
+          return (
+            <div key={dl.id} className={styles.deadlineItem}>
+              <div className={styles.dateStamp}>
+                <span className={styles.month}>{month}</span>
+                <span className={styles.day}>{day}</span>
+              </div>
+              <div className={styles.info}>
+                <div className={styles.itemTitle}>{dl.title}</div>
+                <div className={styles.itemDesc}>{dl.description}</div>
+              </div>
+              <div className={styles.countdown}>{daysUntil}</div>
             </div>
-            <div className={styles.dinfo}>
-              <div className={styles.dtitle}>{dl.title}</div>
-              <div className={styles.dmeta}>{dl.description}</div>
-            </div>
-            <div className={styles.time}>{daysUntil}</div>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
     </article>
   );
 }

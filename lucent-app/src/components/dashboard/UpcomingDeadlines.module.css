@@ -1,71 +1,124 @@
-/* Upcoming deadlines — compact, no rounded card */
+/* Upcoming Deadlines Module */
 .panel {
-  border-top: 2px solid var(--ink);
-  padding: 24px 0 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.panelHeader {
+  margin-bottom: 24px;
+}
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--stone);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.indexNum {
+  color: var(--terracotta);
+  font-weight: 600;
 }
 
 .title {
-  font-size: 14px;
-  font-weight: 600;
+  font-family: var(--serif);
+  font-size: 24px;
   color: var(--ink);
-  letter-spacing: 0.01em;
-  margin-bottom: 14px;
+  letter-spacing: -0.02em;
 }
 
-.deadline {
+.subtext {
+  font-size: 13.5px;
+  color: var(--clay);
+  margin-top: 4px;
+  line-height: 1.5;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  background: var(--paper);
+  border: 1px solid var(--sand-light);
+  border-radius: var(--r-sm);
+}
+
+.deadlineItem {
   display: grid;
-  grid-template-columns: 40px 1fr auto;
+  grid-template-columns: 52px 1fr auto;
   align-items: center;
-  gap: 12px;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--sand);
+  gap: 16px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--sand-light);
+  transition: background 0.12s ease;
 }
 
-.deadline:last-child { border-bottom: none; }
-
-/* Date block — subtle, not the dominant element */
-.date {
-  text-align: center;
+.deadlineItem:last-child {
+  border-bottom: none;
 }
 
-.date span {
-  font-size: 9px;
+.deadlineItem:hover {
+  background: #FAF7F2;
+}
+
+.dateStamp {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--sand-light);
+  background: var(--cream);
+  border-radius: var(--r-xs);
+  padding: 6px 0;
+}
+
+.month {
+  font-family: var(--mono);
+  font-size: 8.5px;
   font-weight: 600;
   letter-spacing: 0.08em;
   color: var(--stone);
   text-transform: uppercase;
-  display: block;
+  line-height: 1;
 }
 
-.date b {
-  font-size: 17px;
-  font-weight: 600;
-  color: var(--ink);
+.day {
   font-family: var(--serif);
-  display: block;
-  line-height: 1;
+  font-size: 18px;
+  font-weight: 400;
+  color: var(--ink);
+  line-height: 1.1;
   margin-top: 2px;
 }
 
-.dinfo {}
+.info {
+  min-width: 0;
+}
 
-.dtitle {
+.itemTitle {
   font-size: 13px;
   font-weight: 500;
   color: var(--ink);
-  line-height: 1.3;
+  line-height: 1.35;
+  margin-bottom: 2px;
 }
 
-.dmeta {
-  font-size: 11px;
+.itemDesc {
+  font-size: 11.5px;
   color: var(--stone);
-  margin-top: 2px;
 }
 
-/* Time remaining — plain text, no background pill */
-.time {
+.countdown {
+  font-family: var(--mono);
   font-size: 11px;
-  color: var(--stone);
+  font-weight: 500;
+  color: var(--terracotta);
+  background: rgba(156, 88, 59, 0.08);
+  padding: 3px 8px;
+  border-radius: var(--r-xs);
   white-space: nowrap;
-  font-variant-numeric: tabular-nums;
 }
