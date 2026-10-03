@@ -27,16 +27,9 @@ export default function Sidebar() {
       {/* Brand Header */}
       <div className={styles.brand}>
         <div className={styles.logoRow}>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" className={styles.logoMark} aria-hidden="true">
-            <circle cx="12" cy="12" r="4.2" strokeWidth="1.5" fill="rgba(222, 142, 155, 0.18)" />
-            <line x1="12" y1="2" x2="12" y2="4.8" strokeWidth="1.4" strokeLinecap="round" />
-            <line x1="12" y1="19.2" x2="12" y2="22" strokeWidth="1.4" strokeLinecap="round" />
-            <line x1="2" y1="12" x2="4.8" y2="12" strokeWidth="1.4" strokeLinecap="round" />
-            <line x1="19.2" y1="12" x2="22" y2="12" strokeWidth="1.4" strokeLinecap="round" />
-            <line x1="5.1" y1="5.1" x2="7.1" y2="7.1" strokeWidth="1.3" strokeLinecap="round" />
-            <line x1="16.9" y1="16.9" x2="18.9" y2="18.9" strokeWidth="1.3" strokeLinecap="round" />
-            <line x1="18.9" y1="5.1" x2="16.9" y2="7.1" strokeWidth="1.3" strokeLinecap="round" />
-            <line x1="7.1" y1="16.9" x2="5.1" y2="18.9" strokeWidth="1.3" strokeLinecap="round" />
+          {/* Minimal Editorial Moon Logo */}
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className={styles.logoMark} aria-hidden="true">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" fill="rgba(222, 142, 155, 0.22)" />
           </svg>
           <span className={styles.logo}>LUCENT</span>
           <span className={styles.editionPill}>v2.4</span>
