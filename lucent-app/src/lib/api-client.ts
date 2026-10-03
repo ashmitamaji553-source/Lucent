@@ -157,6 +157,77 @@ export const apiClient = {
     return res.json();
   },
 
+  // Feedback & Adaptive Loop
+  async submitFeedback(payload: {
+    sessionId?: string;
+    subject: string;
+    topic: string;
+    status: 'understood' | 'needs_practice' | 'struggled';
+  }): Promise<{
+    success: boolean;
+    message?: string;
+    feedback?: any;
+    error?: string;
+  }> {
+    const res = await fetch('/api/feedback', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    return res.json();
+  },
+
+  async adaptPlan(payload: {
+    currentPlan?: any;
+    completedSession: {
+      sessionId?: string;
+      subject: string;
+      topic: string;
+      duration?: number;
+      type?: string;
+    };
+    feedback: 'understood' | 'needs_practice' | 'struggled';
+    daysRemaining?: number;
+    hoursPerDay?: number;
+  }): Promise<{
+    summary: string;
+    days: Array<{
+      date: string;
+      totalMinutes: number;
+      sessions: Array<{
+        subject: string;
+        topic: string;
+        duration: number;
+        type: 'Learn' | 'Practice' | 'Revision';
+      }>;
+    }>;
+    adaptation?: {
+      noticed: string;
+      reason: string;
+      topic: string;
+      status: 'understood' | 'needs_practice' | 'struggled';
+      beforeSessions: Array<{
+        subject: string;
+        topic: string;
+        duration: number;
+        type: 'Learn' | 'Practice' | 'Revision';
+      }>;
+      afterSessions: Array<{
+        subject: string;
+        topic: string;
+        duration: number;
+        type: 'Learn' | 'Practice' | 'Revision';
+      }>;
+    };
+  }> {
+    const res = await fetch('/api/adapt', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    return res.json();
+  },
+
   // Resources
   async getResources(): Promise<Array<{ subject: string; resources: Resource[] }>> {
     const res = await fetch('/api/resources');

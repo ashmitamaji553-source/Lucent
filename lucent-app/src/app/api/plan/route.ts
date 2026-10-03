@@ -9,17 +9,18 @@ import { db } from '@/lib/db';
 
 export const dynamic = 'force-dynamic';
 
-// In-memory / file cache for the latest active structured AI plan
-let cachedActivePlan: AiPlanResponse | null = null;
+import { planStore } from '@/services/plan-store';
 
 export async function GET() {
   try {
     const user = userRepo.getPrimaryUser();
     const storedItems = studyPlanRepo.getAll();
 
-    if (!cachedActivePlan) {
+    let activePlan = planStore.getActivePlan();
+
+    if (!activePlan) {
       // Generate default verified plan using user preferences
-      cachedActivePlan = await aiPlannerService.generatePlan({
+      activePlan = await aiPlannerService.generatePlan({
         examDate: user.examDate || new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0],
         hoursPerDay: Math.round((user.dailyStudyGoalMinutes || 180) / 60),
         subjects: ['Mathematics'],
@@ -29,19 +30,22 @@ export async function GET() {
           { name: 'Algebra', confidence: 'High' },
         ],
       });
+      planStore.setActivePlan(activePlan);
     }
 
+    const lastAdaptation = planStore.getLastAdaptation();
     const todayTasks = storedItems.filter((t) => !t.dueDate);
     const upcomingTasks = storedItems.filter((t) => Boolean(t.dueDate));
 
     return NextResponse.json({
       success: true,
-      summary: cachedActivePlan.summary,
-      days: cachedActivePlan.days,
+      summary: activePlan.summary,
+      days: activePlan.days,
+      adaptation: lastAdaptation,
       todayTasks,
       upcomingTasks,
       focusAreas: ['Probability', 'Calculus', 'Algebra'],
-      studyTip: cachedActivePlan.summary,
+      studyTip: activePlan.summary,
     });
   } catch (error: any) {
     return NextResponse.json(
@@ -81,7 +85,7 @@ export async function POST(req: NextRequest) {
       confidence,
     });
 
-    cachedActivePlan = plan;
+    planStore.setActivePlan(plan);
 
     // Update user preferences in DB
     await userRepo.updateUser({
