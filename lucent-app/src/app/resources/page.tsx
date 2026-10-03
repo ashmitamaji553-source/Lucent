@@ -14,7 +14,6 @@ export default function ResourcesPage() {
   return (
     <div className={styles.page}>
       <div className={styles.header}>
-        <div className={styles.eyebrow}>CURATED FOR YOUR GAPS</div>
         <h1 className={styles.heading}>Resources</h1>
         <p className={styles.desc}>Handpicked references based on your topic coverage and PYQ patterns.</p>
       </div>

@@ -1,52 +1,53 @@
+/* Topic coverage — bars are intentionally NOT pill-shaped */
 .panel {
-  background: rgba(255, 253, 248, 0.76);
-  border: 1px solid var(--l);
-  border-radius: 14px;
-  padding: 22px;
+  border-top: 2px solid var(--ink);
+  padding: 24px 0 0;
 }
 
 .title {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--e);
-  margin: 0 0 14px;
-}
-
-.coverage {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: 0.01em;
   margin-bottom: 14px;
 }
 
-.coverage:last-child {
-  margin-bottom: 0;
+.coverage {
+  margin-bottom: 12px;
 }
+
+.coverage:last-child { margin-bottom: 0; }
 
 .chead {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: baseline;
   font-size: 12px;
-  margin-bottom: 7px;
-  color: var(--e);
+  margin-bottom: 5px;
+  color: var(--clay);
 }
 
 .pct {
-  font-weight: 600;
-  color: var(--m);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--stone);
+  font-variant-numeric: tabular-nums;
 }
 
+/* Progress track — sharp corners, not pills */
 .track {
-  height: 7px;
-  background: #e7ded3;
-  border-radius: 99px;
+  height: 3px;
+  background: var(--sand);
+  border-radius: 0;
   overflow: hidden;
 }
 
 .fill {
   height: 100%;
-  border-radius: 99px;
-  transition: width 0.8s ease;
+  border-radius: 0;
+  transition: width 0.7s ease;
 }
 
-.sage { background: var(--s); }
-.honey { background: var(--h); }
-.rose { background: var(--d); }
+.sage { background: var(--sage); }
+.honey { background: var(--honey); }
+.rose { background: var(--rose); }

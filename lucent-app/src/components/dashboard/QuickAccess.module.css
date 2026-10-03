@@ -1,51 +1,57 @@
+/* Quick access — navigation list, not a card grid */
 .panel {
-  background: rgba(255, 253, 248, 0.76);
-  border: 1px solid var(--l);
-  border-radius: 14px;
-  padding: 22px;
+  border-top: 2px solid var(--ink);
+  padding: 24px 0 0;
 }
 
 .title {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--e);
-  margin: 0 0 14px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: 0.01em;
+  margin-bottom: 8px;
 }
 
 .grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 9px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
 }
 
+/* Each link is a ruled text row — no card */
 .quickBtn {
-  border: 1px solid rgba(62, 37, 33, 0.09);
-  background: rgba(242, 201, 212, 0.3);
-  color: var(--e);
-  border-radius: 9px;
-  padding: 12px 13px;
+  border: none;
+  border-bottom: 1px solid var(--sand);
+  background: transparent;
+  color: var(--clay);
+  border-radius: 0;
+  padding: 10px 0;
   text-align: left;
   font-size: 13px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   text-decoration: none;
-  transition: background 0.15s, transform 0.12s;
-  font-weight: 500;
+  transition: color 0.12s;
+  font-weight: 400;
 }
 
 .quickBtn:hover {
-  background: rgba(242, 201, 212, 0.55);
-  transform: translateY(-1px);
+  color: var(--ink);
+}
+
+.quickBtn:last-child {
+  border-bottom: none;
 }
 
 .quickBtn b {
-  opacity: 0.55;
-  font-size: 14px;
+  font-size: 13px;
+  font-weight: 300;
+  color: var(--stone);
+  transition: transform 0.12s, color 0.12s;
 }
 
-@media (max-width: 580px) {
-  .grid {
-    grid-template-columns: 1fr;
-  }
+.quickBtn:hover b {
+  transform: translateX(3px);
+  color: var(--clay);
 }

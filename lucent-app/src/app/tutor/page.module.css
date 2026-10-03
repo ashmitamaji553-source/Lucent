@@ -1,5 +1,11 @@
+/*
+  Tutor — full-height chat.
+  Context sidebar: plain, no card wrapper.
+  Chat area: clean, messages not inside heavy cards.
+  Input: flat underline style.
+*/
 .page {
-  height: calc(100vh - 68px);
+  height: calc(100vh - 56px);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -7,51 +13,50 @@
 
 .layout {
   display: grid;
-  grid-template-columns: 260px 1fr;
+  grid-template-columns: 240px 1fr;
   height: 100%;
   overflow: hidden;
 }
 
-/* Context sidebar */
+/* Context panel — ruled right border, no card */
 .context {
-  border-right: 1px solid rgba(62, 37, 33, 0.08);
-  padding: 26px 20px;
+  border-right: 1px solid var(--sand);
+  padding: 28px 20px;
   overflow-y: auto;
-  background: rgba(244, 237, 228, 0.4);
+  background: var(--paper);
 }
 
 .contextTitle {
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--e);
-  margin-bottom: 4px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.01em;
 }
 
 .contextSub {
   font-size: 12px;
-  color: var(--m);
+  color: var(--stone);
+  margin-top: 3px;
   margin-bottom: 24px;
 }
 
-.contextSection {
-  margin-bottom: 22px;
-}
+.contextSection { margin-bottom: 24px; }
 
 .sectionLabel {
   font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
+  font-weight: 600;
+  letter-spacing: 0.13em;
+  color: var(--stone);
   text-transform: uppercase;
-  color: var(--m);
   margin-bottom: 10px;
 }
 
+/* Context breadcrumb — underline, not pill */
 .contextPath {
   font-size: 12px;
-  color: var(--e);
-  background: rgba(217, 143, 154, 0.15);
-  border-radius: 8px;
-  padding: 8px 11px;
+  color: var(--clay);
+  padding: 8px 0;
+  border-bottom: 1px solid var(--sand);
   line-height: 1.4;
 }
 
@@ -60,44 +65,41 @@
   align-items: center;
   gap: 8px;
   padding: 7px 0;
-  border-bottom: 1px solid rgba(62, 37, 33, 0.05);
+  border-bottom: 1px solid var(--sand);
   font-size: 12px;
-  color: var(--e);
+  color: var(--clay);
 }
 
 .fileIcon {
-  width: 26px;
-  height: 26px;
-  border-radius: 6px;
-  background: #f2d9d8;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--r-sm);
+  background: var(--blush-subtle);
   display: grid;
   place-items: center;
-  color: #a64f55;
-  font-size: 8px;
+  color: var(--rose);
+  font-size: 7px;
   font-weight: 700;
   flex: none;
 }
 
+/* Suggestion links — plain text, no card or pill */
 .suggestion {
   display: block;
   width: 100%;
   text-align: left;
   font-size: 12px;
-  color: var(--m);
-  padding: 8px 10px;
-  border-radius: 8px;
-  margin-bottom: 4px;
-  border: 1px solid rgba(62, 37, 33, 0.07);
+  color: var(--clay);
+  padding: 8px 0;
+  border-bottom: 1px solid var(--sand);
   background: transparent;
-  transition: background 0.12s, color 0.12s;
+  transition: color 0.12s;
   cursor: pointer;
   line-height: 1.4;
+  border-radius: 0;
 }
 
-.suggestion:hover {
-  background: rgba(217, 143, 154, 0.12);
-  color: var(--e);
-}
+.suggestion:hover { color: var(--ink); }
 
 /* Chat area */
 .chat {
@@ -107,37 +109,37 @@
 }
 
 .chatHeader {
-  padding: 18px 26px 16px;
-  border-bottom: 1px solid rgba(62, 37, 33, 0.07);
+  padding: 16px 28px;
+  border-bottom: 1px solid var(--sand);
   flex: none;
 }
 
 .chatTitle {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--e);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
 }
 
 .chatSub {
   font-size: 12px;
-  color: var(--m);
+  color: var(--stone);
   margin-top: 2px;
 }
 
 .messages {
   flex: 1;
   overflow-y: auto;
-  padding: 22px 26px;
+  padding: 24px 28px;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 20px;
 }
 
 .message {
   display: flex;
   gap: 12px;
   align-items: flex-start;
-  max-width: 680px;
+  max-width: 640px;
 }
 
 .userMsg {
@@ -145,30 +147,32 @@
   margin-left: auto;
 }
 
+/* Avatar — square, not circle */
 .msgAvatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: var(--t);
-  color: white;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--r-sm);
+  background: var(--terracotta);
+  color: #FAF0EA;
   display: grid;
   place-items: center;
-  font-size: 13px;
-  font-weight: 700;
+  font-size: 12px;
+  font-weight: 600;
   flex: none;
 }
 
+/* Message bubble — minimal border, no heavy card */
 .msgContent {
-  background: rgba(255, 253, 248, 0.9);
-  border: 1px solid var(--l);
-  border-radius: 12px;
-  padding: 13px 15px;
+  background: var(--paper);
+  border: 1px solid var(--sand);
+  border-radius: var(--r-md);
+  padding: 11px 14px;
 }
 
 .userMsg .msgContent {
-  background: var(--e);
-  border-color: var(--e);
-  color: #fff8f0;
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #FAF5F0;
 }
 
 .msgText {
@@ -177,29 +181,28 @@
   white-space: pre-wrap;
 }
 
+/* Sources — inline text list, no pill badges */
 .sources {
   margin-top: 10px;
   display: flex;
   flex-wrap: wrap;
-  gap: 5px;
   align-items: center;
+  gap: 6px;
 }
 
 .sourcesLabel {
   font-size: 10px;
-  color: var(--m);
-  font-weight: 600;
+  color: var(--stone);
+  font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
 
 .source {
-  font-size: 10px;
-  background: rgba(135, 155, 130, 0.15);
-  color: #4a6647;
-  border-radius: 99px;
-  padding: 2px 8px;
-  font-weight: 500;
+  font-size: 11px;
+  color: var(--clay);
+  border-bottom: 1px solid var(--sand);
+  padding-bottom: 1px;
 }
 
 /* Typing indicator */
@@ -207,78 +210,74 @@
   display: flex;
   gap: 4px;
   align-items: center;
-  padding: 14px 16px;
-  background: rgba(255, 253, 248, 0.9);
-  border: 1px solid var(--l);
-  border-radius: 12px;
+  padding: 12px 14px;
+  background: var(--paper);
+  border: 1px solid var(--sand);
+  border-radius: var(--r-md);
 }
 
 .typing span {
-  width: 6px;
-  height: 6px;
-  background: var(--m);
+  width: 5px;
+  height: 5px;
+  background: var(--stone);
   border-radius: 50%;
-  animation: bounce 1.2s infinite;
-  opacity: 0.6;
+  animation: bounce 1.1s infinite;
 }
 
-.typing span:nth-child(2) { animation-delay: 0.2s; }
-.typing span:nth-child(3) { animation-delay: 0.4s; }
+.typing span:nth-child(2) { animation-delay: 0.18s; }
+.typing span:nth-child(3) { animation-delay: 0.36s; }
 
 @keyframes bounce {
-  0%, 80%, 100% { transform: translateY(0); }
-  40% { transform: translateY(-5px); }
+  0%, 80%, 100% { transform: translateY(0); opacity: 0.5; }
+  40% { transform: translateY(-4px); opacity: 1; }
 }
 
-/* Input */
+/* Input row — flat, bordered */
 .inputRow {
-  padding: 16px 26px;
-  border-top: 1px solid rgba(62, 37, 33, 0.07);
+  padding: 16px 28px;
+  border-top: 1px solid var(--sand);
   display: flex;
   gap: 10px;
-  background: rgba(245, 241, 230, 0.8);
+  background: var(--cream);
   flex: none;
 }
 
+/* Input — underline style, not pill */
 .input {
   flex: 1;
-  height: 42px;
-  border: 1px solid rgba(62, 37, 33, 0.12);
-  border-radius: 10px;
-  padding: 0 15px;
+  height: 40px;
+  border: none;
+  border-bottom: 1.5px solid var(--sand);
+  border-radius: 0;
+  padding: 0 8px 0 0;
   font-size: 14px;
-  background: rgba(255, 253, 248, 0.9);
-  color: var(--e);
+  background: transparent;
+  color: var(--ink);
   outline: none;
   transition: border-color 0.15s;
 }
 
-.input:focus {
-  border-color: var(--r);
-}
+.input:focus { border-bottom-color: var(--ink); }
 
-.input::placeholder {
-  color: var(--m);
-}
+.input::placeholder { color: var(--stone); }
 
+/* Send button — flat rectangle */
 .sendBtn {
-  width: 42px;
-  height: 42px;
-  border-radius: 10px;
-  background: var(--e);
-  color: #fff8f0;
-  font-size: 16px;
-  display: grid;
-  place-items: center;
-  transition: 0.15s;
+  height: 40px;
+  padding: 0 16px;
+  border-radius: var(--r-sm);
+  background: var(--ink);
+  color: #FAF5F0;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background 0.14s;
+  white-space: nowrap;
 }
 
-.sendBtn:hover:not(:disabled) {
-  background: #4e2f2b;
-}
+.sendBtn:hover:not(:disabled) { background: var(--clay); }
 
 .sendBtn:disabled {
-  opacity: 0.4;
+  opacity: 0.35;
   cursor: not-allowed;
 }
 

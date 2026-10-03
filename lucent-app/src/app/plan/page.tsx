@@ -15,9 +15,8 @@ export default function PlanPage() {
   return (
     <div className={styles.page}>
       <div className={styles.header}>
-        <div className={styles.eyebrow}>PRIORITISED FOR YOU</div>
         <h1 className={styles.heading}>Study Plan</h1>
-        <p className={styles.desc}>Your focus for today and the days ahead, based on your materials and deadlines.</p>
+        <p className={styles.desc}>Prioritised for today and the days ahead, based on your materials and deadlines.</p>
       </div>
 
       <div className={styles.layout}>

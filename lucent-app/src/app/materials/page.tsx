@@ -25,18 +25,9 @@ export default function MaterialsPage() {
     }, 2000);
   };
 
-  const typeColors: Record<string, string> = {
-    Syllabus: '#A2725E',
-    Notes: '#879B82',
-    PYQs: '#C69A62',
-    Notice: '#D98F9A',
-    Other: '#9B7F87',
-  };
-
   return (
     <div className={styles.page}>
       <div className={styles.header}>
-        <div className={styles.eyebrow}>YOUR LEARNING LIBRARY</div>
         <h1 className={styles.heading}>My Materials</h1>
         <p className={styles.desc}>All your uploaded study materials. Lucent analyses each one to build your topic map.</p>
       </div>
@@ -44,6 +35,7 @@ export default function MaterialsPage() {
       <div className={styles.layout}>
         {/* Upload zone */}
         <div className={styles.uploadZone}>
+          <div className={styles.uploadLabel}>Upload new</div>
           <label
             className={`${styles.drop} ${isDragging ? styles.drag : ''}`}
             onDragEnter={(e) => { e.preventDefault(); setIsDragging(true); }}
@@ -56,9 +48,9 @@ export default function MaterialsPage() {
             }}
           >
             <div className={styles.dropIcon}>⇧</div>
-            <strong>Drag & drop files here</strong>
+            <strong>Drag files here</strong>
             <span>or click to browse</span>
-            <span className={styles.formats}>PDF • DOCX • Images • TXT</span>
+            <span className={styles.formats}>PDF · DOCX · TXT · Images</span>
             <input
               type="file" multiple hidden
               accept=".pdf,.docx,.txt,.png,.jpg,.jpeg"
@@ -67,36 +59,36 @@ export default function MaterialsPage() {
           </label>
 
           <div className={styles.quickBtns}>
-            {['Syllabus', 'Notes', 'PYQs', 'Notice'].map(cat => (
-              <button key={cat} className={styles.quickBtn} onClick={() => showToast(`Add ${cat} — select your file`)}>
-                + {cat}
+            {['+ Syllabus', '+ Notes', '+ PYQs', '+ Notice'].map(cat => (
+              <button key={cat} className={styles.quickBtn} onClick={() => showToast(`Select your file`)}>
+                {cat}
               </button>
             ))}
           </div>
         </div>
 
-        {/* File list */}
+        {/* File table */}
         <div className={styles.fileList}>
           <div className={styles.listHeader}>
-            <span>{files.length} file{files.length !== 1 ? 's' : ''} uploaded</span>
+            <span>File</span>
+            <span>Type</span>
+            <span>Status</span>
+            <span>Uploaded</span>
           </div>
           {files.map(file => (
             <div key={file.id} className={styles.fileRow}>
-              <div className={styles.ficon}>PDF</div>
-              <div className={styles.finfo}>
-                <div className={styles.fname}>{file.name}</div>
-                <div className={styles.fmeta}>{getRelativeTime(file.uploadedAt)}</div>
+              <div className={styles.fileMain}>
+                <div className={styles.ficon}>PDF</div>
+                <div className={styles.finfo}>
+                  <div className={styles.fname}>{file.name}</div>
+                </div>
               </div>
-              <span
-                className={styles.typePill}
-                style={{ background: typeColors[file.type] + '22', color: typeColors[file.type] }}
-              >
-                {file.type}
-              </span>
+              <span className={styles.typePill}>{file.type}</span>
               <div className={`${styles.status} ${file.status === 'Processing' ? styles.processing : ''}`}>
-                <div className={`${styles.statusDot} ${file.status === 'Processed' ? styles.processed : file.status === 'Processing' ? styles.proc : ''}`} />
+                <div className={`${styles.statusDot} ${file.status === 'Processed' ? styles.processed : styles.proc}`} />
                 {file.status}
               </div>
+              <span className={styles.fileAge}>{getRelativeTime(file.uploadedAt)}</span>
             </div>
           ))}
         </div>
