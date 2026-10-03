@@ -389,7 +389,7 @@ export default function PlanPage() {
                 className={styles.secondaryBtn}
                 style={{ padding: '8px 14px', fontSize: '13px', borderColor: 'var(--ink)' }}
               >
-                ✨ View Adaptation
+                View adaptation diff
               </button>
             )}
             <button
@@ -397,7 +397,7 @@ export default function PlanPage() {
               className={styles.secondaryBtn}
               style={{ padding: '8px 14px', fontSize: '13px' }}
             >
-              {showSetup ? 'View Plan' : 'Setup / Configure'}
+              {showSetup ? 'View Plan' : 'Configure'}
             </button>
             <button
               onClick={handleGeneratePlan}
@@ -405,8 +405,7 @@ export default function PlanPage() {
               className={styles.primaryBtn}
               style={{ padding: '8px 16px', fontSize: '13px', opacity: (isLoading || isAdapting) ? 0.6 : 1 }}
             >
-              <span>↻</span>&nbsp;
-              <span>{isLoading ? 'Building...' : 'Regenerate Plan'}</span>
+              <span>{isLoading ? 'Updating...' : 'Update Plan'}</span>
             </button>
           </div>
         </div>
@@ -416,9 +415,9 @@ export default function PlanPage() {
       {isLoading && (
         <div className={styles.loadingContainer}>
           <div className={styles.loadingSpinner} />
-          <div className={styles.loadingText}>Building your plan...</div>
+          <div className={styles.loadingText}>Calibrating study schedule...</div>
           <p className={styles.loadingSub}>
-            Lucent is balancing exam urgency, daily study hours, and confidence levels.
+            Balancing upcoming deadlines with your confidence across topics.
           </p>
         </div>
       )}
@@ -554,10 +553,9 @@ export default function PlanPage() {
       {/* Empty State: If no plan is available */}
       {!isLoading && !showSetup && (!plan || !plan.days || plan.days.length === 0) && (
         <div className={styles.emptyStateCard}>
-          <div className={styles.emptyStateIcon}>📅</div>
           <h2 className={styles.emptyStateTitle}>No Study Plan Yet</h2>
           <p className={styles.emptyStateDesc}>
-            Configure your exam target, available hours, and confidence levels to create your personalized adaptive study schedule.
+            Configure your exam target, available hours, and confidence levels to create your personalized study schedule.
           </p>
           <button
             type="button"
@@ -572,11 +570,11 @@ export default function PlanPage() {
       {/* Main Plan View */}
       {!isLoading && plan && plan.days && plan.days.length > 0 && (
         <>
-          {/* AI Explanation Banner */}
+          {/* Schedule Focus Banner */}
           {plan.summary && (
             <div className={styles.summaryBanner}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div className={styles.summaryLabel}>Lucent Adaptive Strategy</div>
+                <div className={styles.summaryLabel}>Schedule Focus</div>
                 {adaptationData && (
                   <button
                     onClick={() => setActiveModal('adaptation')}
@@ -588,9 +586,10 @@ export default function PlanPage() {
                       fontWeight: 600,
                       cursor: 'pointer',
                       textDecoration: 'underline',
+                      letterSpacing: '0.04em',
                     }}
                   >
-                    View Diff Details
+                    View adaptation diff
                   </button>
                 )}
               </div>
@@ -812,15 +811,15 @@ export default function PlanPage() {
             <div className={styles.modalTag}>SESSION FEEDBACK</div>
             <h2 className={styles.modalTitle}>How did that feel?</h2>
             <p className={styles.modalSubtitle}>
-              Lucent uses your performance to calibrate future study time and activity types.
+              Future sessions will adjust based on what was clear or difficult.
             </p>
 
             {isAdapting ? (
               <div className={styles.loadingContainer} style={{ padding: '36px 0' }}>
                 <div className={styles.loadingSpinner} />
-                <div className={styles.loadingText}>Adapting your study plan...</div>
+                <div className={styles.loadingText}>Adjusting tomorrow&apos;s schedule...</div>
                 <p className={styles.loadingSub}>
-                  Recalculating topic priorities and session durations to match your performance.
+                  Reallocating study time to match your feedback.
                 </p>
               </div>
             ) : (
@@ -833,14 +832,11 @@ export default function PlanPage() {
                   className={styles.feedbackOption}
                 >
                   <div>
-                    <div className={styles.feedbackOptionTitle}>
-                      <span>✓</span> Got it
-                    </div>
+                    <div className={styles.feedbackOptionTitle}>Got it</div>
                     <div className={styles.feedbackOptionDesc}>
-                      Understood clearly. Reduce repetitive review and shift toward practice & revision.
+                      Concepts are clear. Shift future time toward practice and revision.
                     </div>
                   </div>
-                  <span style={{ fontSize: '18px', color: 'var(--sage)' }}>→</span>
                 </button>
 
                 {/* 2. Need more practice -> needs_practice */}
@@ -851,14 +847,11 @@ export default function PlanPage() {
                   className={styles.feedbackOption}
                 >
                   <div>
-                    <div className={styles.feedbackOptionTitle}>
-                      <span>⚡</span> Need more practice
-                    </div>
+                    <div className={styles.feedbackOptionTitle}>Need more practice</div>
                     <div className={styles.feedbackOptionDesc}>
-                      Understood the basics, but need more hands-on exercises and problem solving.
+                      Understood the material, but need additional hands-on problem solving.
                     </div>
                   </div>
-                  <span style={{ fontSize: '18px', color: 'var(--honey)' }}>→</span>
                 </button>
 
                 {/* 3. I'm stuck -> struggled */}
@@ -869,14 +862,11 @@ export default function PlanPage() {
                   className={styles.feedbackOption}
                 >
                   <div>
-                    <div className={styles.feedbackOptionTitle}>
-                      <span>⚠️</span> I&apos;m stuck
-                    </div>
+                    <div className={styles.feedbackOptionTitle}>I&apos;m stuck</div>
                     <div className={styles.feedbackOptionDesc}>
-                      Difficult topic. Needs another pass with additional learning time and review.
+                      Challenging topic. Increase review and practice time on upcoming days.
                     </div>
                   </div>
-                  <span style={{ fontSize: '18px', color: 'var(--rose)' }}>→</span>
                 </button>
               </div>
             )}
@@ -902,31 +892,23 @@ export default function PlanPage() {
       {activeModal === 'adaptation' && adaptationData && (
         <div className={styles.modalOverlay} onClick={() => setActiveModal('none')}>
           <div className={styles.adaptationModalCard} onClick={(e) => e.stopPropagation()}>
-            <div className={styles.modalTag}>ADAPTATION COMPLETED</div>
-            <h2 className={styles.modalTitle}>Plan Adapted to Your Performance</h2>
+            <div className={styles.modalTag}>ADAPTIVE STUDY LOOP</div>
+            <h2 className={styles.modalTitle}>Tomorrow&apos;s Plan Adjusted</h2>
             <p className={styles.modalSubtitle}>
-              Lucent observed your feedback and dynamically recalculated future sessions.
+              Calibrated to your feedback while keeping total daily study hours balanced.
             </p>
 
             {/* 1. What Lucent noticed & 2. Why the plan changed */}
             <div className={styles.adaptationBannerNotice}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                <span style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--stone)' }}>
-                  1. What Lucent Noticed
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                <span style={{ fontSize: '10px', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--stone)' }}>
+                  1. Observation
                 </span>
                 <span
                   style={{
-                    fontSize: '10px',
+                    fontSize: '11px',
                     fontWeight: 600,
-                    textTransform: 'uppercase',
-                    padding: '2px 6px',
-                    borderRadius: '4px',
-                    background:
-                      adaptationData.status === 'struggled'
-                        ? 'rgba(168, 88, 96, 0.12)'
-                        : adaptationData.status === 'needs_practice'
-                        ? 'rgba(184, 146, 74, 0.12)'
-                        : 'rgba(122, 145, 117, 0.12)',
+                    textTransform: 'capitalize',
                     color:
                       adaptationData.status === 'struggled'
                         ? 'var(--rose)'
@@ -935,14 +917,14 @@ export default function PlanPage() {
                         : 'var(--sage)',
                   }}
                 >
-                  Status: {adaptationData.status.replace('_', ' ')}
+                  Feedback: {adaptationData.status.replace('_', ' ')}
                 </span>
               </div>
               <div className={styles.adaptationNoticeHeadline}>{adaptationData.noticed}</div>
 
-              <div style={{ marginTop: '12px' }}>
-                <span style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--stone)', display: 'block', marginBottom: '2px' }}>
-                  2. Why The Plan Changed
+              <div style={{ marginTop: '14px', borderTop: '1px solid rgba(212, 197, 187, 0.4)', paddingTop: '10px' }}>
+                <span style={{ fontSize: '10px', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--stone)', display: 'block', marginBottom: '3px' }}>
+                  2. Rationale
                 </span>
                 <div className={styles.adaptationNoticeReason}>{adaptationData.reason}</div>
               </div>
@@ -962,10 +944,10 @@ export default function PlanPage() {
                   {adaptationData.beforeSessions.map((s, idx) => (
                     <div key={`before_${idx}`} className={styles.comparisonSessionItem}>
                       <div>
-                        <div style={{ fontSize: '14px', fontWeight: 500, color: 'var(--ink)' }}>{s.topic}</div>
+                        <div style={{ fontSize: '13.5px', fontWeight: 500, color: 'var(--ink)' }}>{s.topic}</div>
                         <div style={{ fontSize: '11px', color: 'var(--stone)' }}>{s.subject} · {s.type}</div>
                       </div>
-                      <div style={{ fontSize: '13px', fontWeight: 600, color: 'var(--clay)' }}>
+                      <div style={{ fontSize: '13px', fontWeight: 500, color: 'var(--clay)' }}>
                         {s.duration} min
                       </div>
                     </div>
@@ -976,23 +958,9 @@ export default function PlanPage() {
               {/* AFTER CARD */}
               <div className={styles.comparisonCardAdapted}>
                 <div className={styles.comparisonCardHeader}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <span className={styles.comparisonCardTitle} style={{ color: 'var(--ink)' }}>
-                      4. After Plan (Adapted)
-                    </span>
-                    <span
-                      style={{
-                        background: 'var(--ink)',
-                        color: '#fff',
-                        fontSize: '9px',
-                        padding: '1px 5px',
-                        borderRadius: '3px',
-                        fontWeight: 600,
-                      }}
-                    >
-                      NEW
-                    </span>
-                  </div>
+                  <span className={styles.comparisonCardTitle} style={{ color: 'var(--ink)' }}>
+                    4. After Plan (Adapted)
+                  </span>
                   <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--ink)' }}>
                     Total: {adaptationData.afterSessions.reduce((sum, s) => sum + s.duration, 0)} min
                   </span>
@@ -1008,11 +976,11 @@ export default function PlanPage() {
                     return (
                       <div key={`after_${idx}`} className={styles.comparisonSessionItem}>
                         <div>
-                          <div style={{ fontSize: '14px', fontWeight: 600, color: 'var(--ink)' }}>{s.topic}</div>
+                          <div style={{ fontSize: '13.5px', fontWeight: 600, color: 'var(--ink)' }}>{s.topic}</div>
                           <div style={{ fontSize: '11px', color: 'var(--stone)' }}>{s.subject} · {s.type}</div>
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                          <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--ink)' }}>
+                          <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--ink)' }}>
                             {s.duration} min
                           </span>
                           {diff > 0 && (
@@ -1027,7 +995,7 @@ export default function PlanPage() {
                           )}
                           {diff === 0 && (
                             <span className={styles.deltaBadgeNeutral}>
-                              =
+                              —
                             </span>
                           )}
                         </div>
@@ -1044,7 +1012,7 @@ export default function PlanPage() {
                 onClick={() => setActiveModal('none')}
                 className={styles.primaryBtn}
               >
-                Apply & Continue Studying →
+                Accept & View Schedule →
               </button>
             </div>
           </div>
