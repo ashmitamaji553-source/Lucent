@@ -1,9 +1,10 @@
+'use client';
 import Link from 'next/link';
-import { mockSignals } from '@/lib/mockData';
+import { useLucent } from '@/lib/LucentContext';
 import styles from './SignalCards.module.css';
 
 export default function SignalCards() {
-  const s = mockSignals;
+  const { signals: s } = useLucent();
 
   return (
     <section className={styles.insights} aria-label="Quick signals">

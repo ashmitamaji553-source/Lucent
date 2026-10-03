@@ -1,14 +1,17 @@
-// lib/types.ts
+// src/lib/types.ts
+// Compatibility layer re-exporting clean models and legacy types
+export * from './models/types';
+
 export interface UploadedFile {
   id: string;
   name: string;
   type: 'Syllabus' | 'Notes' | 'PYQs' | 'Notice' | 'Other';
-  uploadedAt: Date;
-  status: 'Processing' | 'Processed' | 'Error';
+  uploadedAt: Date | string;
+  status: 'Uploading' | 'Processing' | 'Processed' | 'Error';
   size?: number;
 }
 
-export interface Deadline {
+export interface LegacyDeadline {
   id: string;
   title: string;
   description: string;
@@ -16,22 +19,26 @@ export interface Deadline {
   type: 'Quiz' | 'Assignment' | 'Exam' | 'Project' | 'Other';
 }
 
-export interface TopicCoverage {
-  id: string;
-  subject: string;
-  coverage: number;
-  subtopics?: SubTopic[];
-}
-
-export interface SubTopic {
+export interface LegacySubTopic {
   id: string;
   name: string;
   coverage: number;
   pyqFrequency: 'High' | 'Medium' | 'Low' | 'None';
   difficulty: 'Easy' | 'Medium' | 'Hard';
   prerequisites?: string[];
-  children?: SubTopic[];
+  children?: LegacySubTopic[];
 }
+
+export type SubTopic = LegacySubTopic;
+
+export interface LegacyTopicCoverage {
+  id: string;
+  subject: string;
+  coverage: number;
+  subtopics?: LegacySubTopic[];
+}
+
+export type TopicCoverage = LegacyTopicCoverage;
 
 export interface Signal {
   missingTopics: number;
@@ -44,20 +51,21 @@ export interface StudyTask {
   id: string;
   title: string;
   duration: string;
-  dueDate?: Date;
+  dueDate?: Date | string;
   priority: 'High' | 'Medium' | 'Low';
   type: 'Review' | 'Practice' | 'Read' | 'Quiz';
+  completed?: boolean;
 }
 
 export interface ChatMessage {
   id: string;
-  role: 'user' | 'assistant';
+  role: 'user' | 'assistant' | 'system';
   content: string;
   sources?: string[];
-  timestamp: Date;
+  timestamp: Date | string;
 }
 
-export interface Resource {
+export interface LegacyResource {
   id: string;
   title: string;
   type: 'Video' | 'Article' | 'PDF' | 'Quiz';
@@ -65,3 +73,5 @@ export interface Resource {
   url: string;
   relevance: 'High' | 'Medium';
 }
+
+export type Resource = LegacyResource;

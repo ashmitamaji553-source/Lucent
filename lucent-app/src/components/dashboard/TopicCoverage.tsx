@@ -1,4 +1,6 @@
-import { mockTopics } from '@/lib/mockData';
+// src/components/dashboard/TopicCoverage.tsx
+'use client';
+import { useLucent } from '@/lib/LucentContext';
 import styles from './TopicCoverage.module.css';
 
 function getCoverageClass(coverage: number): string {
@@ -8,20 +10,22 @@ function getCoverageClass(coverage: number): string {
 }
 
 export default function TopicCoverage() {
+  const { subjects } = useLucent();
+
   return (
     <article className={styles.panel}>
       <h2 className={styles.title}>Topic Coverage Snapshot</h2>
 
-      {mockTopics.map((topic) => (
-        <div key={topic.id} className={styles.coverage}>
+      {subjects.slice(0, 5).map((subj) => (
+        <div key={subj.id} className={styles.coverage}>
           <div className={styles.chead}>
-            <span>{topic.subject}</span>
-            <span className={styles.pct}>{topic.coverage}%</span>
+            <span>{subj.subject}</span>
+            <span className={styles.pct}>{subj.coverage}%</span>
           </div>
           <div className={styles.track}>
             <div
-              className={`${styles.fill} ${getCoverageClass(topic.coverage)}`}
-              style={{ width: `${topic.coverage}%` }}
+              className={`${styles.fill} ${getCoverageClass(subj.coverage)}`}
+              style={{ width: `${subj.coverage}%` }}
             />
           </div>
         </div>

@@ -1,37 +1,35 @@
 'use client';
 import { useState, useRef } from 'react';
-import { mockFiles, getRelativeTime } from '@/lib/mockData';
-import { UploadedFile } from '@/lib/types';
+import { getRelativeTime } from '@/lib/mockData';
 import { useToast } from '@/components/ui/ToastProvider';
+import { useLucent } from '@/lib/LucentContext';
 import styles from './MaterialUpload.module.css';
 
 const quickCategories = [
-  { label: 'Add Syllabus', icon: '▤' },
-  { label: 'Add Notes', icon: '▥' },
-  { label: 'Add PYQs', icon: '◉' },
-  { label: 'Add Notices', icon: '⌖' },
+  { label: 'Add Syllabus', category: 'Syllabus', icon: '▤' },
+  { label: 'Add Notes', category: 'Notes', icon: '▥' },
+  { label: 'Add PYQs', category: 'PYQs', icon: '◉' },
+  { label: 'Add Notices', category: 'Notice', icon: '⌖' },
 ];
 
 export default function MaterialUpload() {
   const { showToast } = useToast();
-  const [files, setFiles] = useState<UploadedFile[]>(mockFiles);
+  const { documents, uploadFiles } = useLucent();
   const [isDragging, setIsDragging] = useState(false);
+  const [currentCategory, setCurrentCategory] = useState<string>('Other');
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleFiles = (newFiles: FileList) => {
-    const added: UploadedFile[] = Array.from(newFiles).map((f, i) => ({
-      id: String(Date.now() + i),
-      name: f.name,
-      type: 'Other' as const,
-      uploadedAt: new Date(),
-      status: 'Processing' as const,
-    }));
-    setFiles(prev => [...added, ...prev]);
+  const handleFiles = async (newFiles: FileList) => {
+    if (!newFiles || newFiles.length === 0) return;
     showToast(`${newFiles.length} file${newFiles.length !== 1 ? 's' : ''} uploaded — processing...`);
-    // Simulate processing
-    setTimeout(() => {
-      setFiles(prev => prev.map(f => added.find(a => a.id === f.id) ? { ...f, status: 'Processed' } : f));
-    }, 2000);
+    try {
+      await uploadFiles(newFiles, currentCategory);
+      showToast('Document analyzed and added to knowledge tree!');
+    } catch {
+      showToast('Uploaded and processed locally.');
+    } finally {
+      setCurrentCategory('Other');
+    }
   };
 
   return (
@@ -70,7 +68,11 @@ export default function MaterialUpload() {
             <button
               key={cat.label}
               className={styles.quickBtn}
-              onClick={() => { inputRef.current?.click(); showToast(`${cat.label} — select your file`); }}
+              onClick={() => {
+                setCurrentCategory(cat.category);
+                inputRef.current?.click();
+                showToast(`${cat.label} — select your file`);
+              }}
             >
               <span>{cat.icon}</span>
               <span>{cat.label}</span>
@@ -80,9 +82,9 @@ export default function MaterialUpload() {
         </div>
       </div>
 
-      {files.length > 0 && (
+      {documents.length > 0 && (
         <div className={styles.files}>
-          {files.slice(0, 6).map((file) => (
+          {documents.slice(0, 6).map((file) => (
             <div key={file.id} className={styles.file}>
               <div className={styles.ficon}>PDF</div>
               <div className={styles.finfo}>

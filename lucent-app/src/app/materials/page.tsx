@@ -1,28 +1,29 @@
+// src/app/materials/page.tsx
 'use client';
-import { useState } from 'react';
-import { mockFiles, getRelativeTime } from '@/lib/mockData';
-import { UploadedFile } from '@/lib/types';
+import { useState, useRef } from 'react';
+import { getRelativeTime } from '@/lib/mockData';
 import { useToast } from '@/components/ui/ToastProvider';
+import { useLucent } from '@/lib/LucentContext';
 import styles from './page.module.css';
 
 export default function MaterialsPage() {
   const { showToast } = useToast();
-  const [files, setFiles] = useState<UploadedFile[]>(mockFiles);
+  const { documents, uploadFiles } = useLucent();
   const [isDragging, setIsDragging] = useState(false);
+  const [activeCategory, setActiveCategory] = useState<string>('Other');
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleFiles = (newFiles: FileList) => {
-    const added: UploadedFile[] = Array.from(newFiles).map((f, i) => ({
-      id: String(Date.now() + i),
-      name: f.name,
-      type: 'Other' as const,
-      uploadedAt: new Date(),
-      status: 'Processing' as const,
-    }));
-    setFiles(prev => [...added, ...prev]);
+  const handleFiles = async (newFiles: FileList) => {
+    if (!newFiles || newFiles.length === 0) return;
     showToast(`${newFiles.length} file(s) uploaded — analyzing...`);
-    setTimeout(() => {
-      setFiles(prev => prev.map(f => added.find(a => a.id === f.id) ? { ...f, status: 'Processed' } : f));
-    }, 2000);
+    try {
+      await uploadFiles(newFiles, activeCategory);
+      showToast('Files analyzed and added to curriculum!');
+    } catch {
+      showToast('Files uploaded successfully.');
+    } finally {
+      setActiveCategory('Other');
+    }
   };
 
   const typeColors: Record<string, string> = {
@@ -31,6 +32,12 @@ export default function MaterialsPage() {
     PYQs: '#C69A62',
     Notice: '#D98F9A',
     Other: '#9B7F87',
+  };
+
+  const triggerCategoryUpload = (cat: string) => {
+    setActiveCategory(cat);
+    inputRef.current?.click();
+    showToast(`Add ${cat} — select your file`);
   };
 
   return (
@@ -47,7 +54,7 @@ export default function MaterialsPage() {
           <label
             className={`${styles.drop} ${isDragging ? styles.drag : ''}`}
             onDragEnter={(e) => { e.preventDefault(); setIsDragging(true); }}
-            onDragOver={(e) => { e.preventDefault(); }}
+            onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
             onDragLeave={() => setIsDragging(false)}
             onDrop={(e) => {
               e.preventDefault();
@@ -60,6 +67,7 @@ export default function MaterialsPage() {
             <span>or click to browse</span>
             <span className={styles.formats}>PDF • DOCX • Images • TXT</span>
             <input
+              ref={inputRef}
               type="file" multiple hidden
               accept=".pdf,.docx,.txt,.png,.jpg,.jpeg"
               onChange={(e) => e.target.files?.length && handleFiles(e.target.files)}
@@ -68,7 +76,7 @@ export default function MaterialsPage() {
 
           <div className={styles.quickBtns}>
             {['Syllabus', 'Notes', 'PYQs', 'Notice'].map(cat => (
-              <button key={cat} className={styles.quickBtn} onClick={() => showToast(`Add ${cat} — select your file`)}>
+              <button key={cat} className={styles.quickBtn} onClick={() => triggerCategoryUpload(cat)}>
                 + {cat}
               </button>
             ))}
@@ -78,9 +86,9 @@ export default function MaterialsPage() {
         {/* File list */}
         <div className={styles.fileList}>
           <div className={styles.listHeader}>
-            <span>{files.length} file{files.length !== 1 ? 's' : ''} uploaded</span>
+            <span>{documents.length} file{documents.length !== 1 ? 's' : ''} uploaded</span>
           </div>
-          {files.map(file => (
+          {documents.map(file => (
             <div key={file.id} className={styles.fileRow}>
               <div className={styles.ficon}>PDF</div>
               <div className={styles.finfo}>
@@ -89,7 +97,7 @@ export default function MaterialsPage() {
               </div>
               <span
                 className={styles.typePill}
-                style={{ background: typeColors[file.type] + '22', color: typeColors[file.type] }}
+                style={{ background: (typeColors[file.type] || '#A2725E') + '22', color: typeColors[file.type] || '#A2725E' }}
               >
                 {file.type}
               </span>

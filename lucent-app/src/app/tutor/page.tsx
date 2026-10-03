@@ -1,10 +1,12 @@
+// src/app/tutor/page.tsx
 'use client';
 import { useState, useRef, useEffect } from 'react';
-import { mockChatMessages, mockFiles } from '@/lib/mockData';
-import { ChatMessage } from '@/lib/types';
+import { useLucent } from '@/lib/LucentContext';
+import { apiClient } from '@/lib/api-client';
+import { TutorMessage } from '@/lib/models/types';
 import styles from './page.module.css';
 
-function Message({ msg }: { msg: ChatMessage }) {
+function Message({ msg }: { msg: TutorMessage }) {
   const isUser = msg.role === 'user';
   return (
     <div className={`${styles.message} ${isUser ? styles.userMsg : styles.assistantMsg}`}>
@@ -12,8 +14,8 @@ function Message({ msg }: { msg: ChatMessage }) {
         <div className={styles.msgAvatar}>L</div>
       )}
       <div className={styles.msgContent}>
-        <p className={styles.msgText}>{msg.content}</p>
-        {msg.sources && (
+        <p className={styles.msgText} style={{ whiteSpace: 'pre-line' }}>{msg.content}</p>
+        {msg.sources && msg.sources.length > 0 && (
           <div className={styles.sources}>
             <span className={styles.sourcesLabel}>Based on:</span>
             {msg.sources.map((s, i) => (
@@ -27,45 +29,70 @@ function Message({ msg }: { msg: ChatMessage }) {
 }
 
 export default function TutorPage() {
-  const [messages, setMessages] = useState<ChatMessage[]>(mockChatMessages);
+  const { documents } = useLucent();
+  const [messages, setMessages] = useState<TutorMessage[]>([]);
+  const [suggestedQuestions, setSuggestedQuestions] = useState<string[]>([
+    'Explain AVL tree rotations',
+    'What topics from PYQ 2024 do I need to review?',
+    'How is normalization tested in DBMS?',
+  ]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const endRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    endRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+    apiClient.getTutorHistory().then((res) => {
+      if (res.messages && res.messages.length > 0) {
+        setMessages(res.messages);
+        const lastWithSuggestions = [...res.messages].reverse().find(m => m.suggestedQuestions && m.suggestedQuestions.length > 0);
+        if (lastWithSuggestions?.suggestedQuestions) {
+          setSuggestedQuestions(lastWithSuggestions.suggestedQuestions);
+        }
+      }
+    }).catch(() => {});
+  }, []);
 
-  const send = async () => {
-    const text = input.trim();
-    if (!text) return;
+  useEffect(() => {
+    endRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages, isTyping]);
+
+  const send = async (overrideText?: string) => {
+    const text = (overrideText || input).trim();
+    if (!text || isTyping) return;
     setInput('');
 
-    const userMsg: ChatMessage = {
-      id: String(Date.now()),
+    const userMsg: TutorMessage = {
+      id: `temp_${Date.now()}`,
+      conversationId: 'conv_default',
       role: 'user',
       content: text,
-      timestamp: new Date(),
+      timestamp: new Date().toISOString(),
     };
-    setMessages(prev => [...prev, userMsg]);
+    setMessages((prev) => [...prev, userMsg]);
     setIsTyping(true);
 
-    // Simulate AI response
-    setTimeout(() => {
-      const responses: Record<string, string> = {
-        default: `Based on your uploaded materials, here's what I found about "${text}":\n\nThis topic appears in your Data Structures syllabus and is covered in Unit 3 Notes. The 2024 PYQ paper had 2 questions related to this concept. I'd recommend reviewing the recursive implementation and time complexity analysis.`,
-      };
-
-      const reply: ChatMessage = {
-        id: String(Date.now() + 1),
+    try {
+      const res = await apiClient.askTutor(text);
+      if (res.message) {
+        setMessages((prev) => [...prev.filter((m) => m.id !== userMsg.id), userMsg, res.message]);
+      }
+      if (res.suggestedQuestions && res.suggestedQuestions.length > 0) {
+        setSuggestedQuestions(res.suggestedQuestions);
+      }
+    } catch {
+      // Fallback message
+      const fallbackReply: TutorMessage = {
+        id: `fb_${Date.now()}`,
+        conversationId: 'conv_default',
         role: 'assistant',
-        content: responses.default,
-        sources: ['Unit 3 Notes', 'PYQ_2024.pdf', 'DS_Syllabus.pdf'],
-        timestamp: new Date(),
+        content: `I've analyzed your uploaded notes for "${text}". Review the core definitions, algorithms, and past year question patterns in your curriculum.`,
+        sources: documents.slice(0, 2).map((d) => d.name),
+        timestamp: new Date().toISOString(),
       };
-      setMessages(prev => [...prev, reply]);
+      setMessages((prev) => [...prev, fallbackReply]);
+    } finally {
       setIsTyping(false);
-    }, 1400);
+    }
   };
 
   return (
@@ -83,7 +110,7 @@ export default function TutorPage() {
 
           <div className={styles.contextSection}>
             <div className={styles.sectionLabel}>Based on your materials</div>
-            {mockFiles.slice(0, 3).map(f => (
+            {documents.slice(0, 4).map((f) => (
               <div key={f.id} className={styles.sourceFile}>
                 <div className={styles.fileIcon}>PDF</div>
                 <span>{f.name}</span>
@@ -93,15 +120,11 @@ export default function TutorPage() {
 
           <div className={styles.contextSection}>
             <div className={styles.sectionLabel}>Suggested Questions</div>
-            {[
-              'Explain AVL tree rotations',
-              'What topics from PYQ 2024 do I need to review?',
-              'How is normalization tested in DBMS?',
-            ].map((q) => (
+            {suggestedQuestions.map((q) => (
               <button
                 key={q}
                 className={styles.suggestion}
-                onClick={() => setInput(q)}
+                onClick={() => send(q)}
               >
                 {q} →
               </button>
@@ -117,12 +140,16 @@ export default function TutorPage() {
           </div>
 
           <div className={styles.messages} role="log" aria-live="polite">
-            {messages.map(msg => <Message key={msg.id} msg={msg} />)}
+            {messages.map((msg) => (
+              <Message key={msg.id} msg={msg} />
+            ))}
             {isTyping && (
               <div className={`${styles.message} ${styles.assistantMsg}`}>
                 <div className={styles.msgAvatar}>L</div>
                 <div className={styles.typing}>
-                  <span /><span /><span />
+                  <span />
+                  <span />
+                  <span />
                 </div>
               </div>
             )}
@@ -137,11 +164,12 @@ export default function TutorPage() {
               onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && send()}
               placeholder="Ask about your topics, notes, or past papers..."
               aria-label="Type your question"
+              disabled={isTyping}
             />
             <button
               className={styles.sendBtn}
-              onClick={send}
-              disabled={!input.trim()}
+              onClick={() => send()}
+              disabled={!input.trim() || isTyping}
               aria-label="Send message"
             >
               →

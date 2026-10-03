@@ -5,6 +5,7 @@ import styles from './layout.module.css';
 import Sidebar from '@/components/layout/Sidebar';
 import Topbar from '@/components/layout/Topbar';
 import ToastProvider from '@/components/ui/ToastProvider';
+import { LucentProvider } from '@/lib/LucentContext';
 
 export const metadata: Metadata = {
   title: 'Lucent — Study Workspace',
@@ -16,15 +17,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body>
         <ToastProvider>
-          <div className={styles.app}>
-            <Sidebar />
-            <div className={styles.mainWrapper}>
-              <Topbar />
-              <main className={styles.main}>
-                {children}
-              </main>
+          <LucentProvider>
+            <div className={styles.app}>
+              <Sidebar />
+              <div className={styles.mainWrapper}>
+                <Topbar />
+                <main className={styles.main}>
+                  {children}
+                </main>
+              </div>
             </div>
-          </div>
+          </LucentProvider>
         </ToastProvider>
       </body>
     </html>

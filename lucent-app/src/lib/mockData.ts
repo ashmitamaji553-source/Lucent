@@ -1,5 +1,5 @@
 // lib/mockData.ts
-import { UploadedFile, Deadline, TopicCoverage, Signal, StudyTask, ChatMessage, Resource } from './types';
+import { UploadedFile, LegacyDeadline, TopicCoverage, Signal, StudyTask, ChatMessage, Resource } from './types';
 
 export const mockFiles: UploadedFile[] = [
   { id: '1', name: 'DS_Syllabus.pdf', type: 'Syllabus', uploadedAt: new Date(Date.now() - 2 * 3600000), status: 'Processed' },
@@ -8,7 +8,7 @@ export const mockFiles: UploadedFile[] = [
   { id: '4', name: 'Notice_Sep18.pdf', type: 'Notice', uploadedAt: new Date(Date.now() - 5 * 3600000), status: 'Processed' },
 ];
 
-export const mockDeadlines: Deadline[] = [
+export const mockDeadlines: LegacyDeadline[] = [
   { id: '1', title: 'DBMS Quiz', description: 'Prepare: SQL Joins, Normalization', date: new Date(Date.now() + 3 * 86400000), type: 'Quiz' },
   { id: '2', title: 'Assignment 2', description: 'Submission deadline', date: new Date(Date.now() + 5 * 86400000), type: 'Assignment' },
   { id: '3', title: 'Midterm Exam', description: 'Data Structures', date: new Date(Date.now() + 9 * 86400000), type: 'Exam' },
@@ -102,7 +102,8 @@ export const mockResources: Resource[] = [
   { id: '6', title: 'Database Normalization 3NF', type: 'Article', subject: 'DBMS', url: '#', relevance: 'High' },
 ];
 
-export function getRelativeTime(date: Date): string {
+export function getRelativeTime(dateInput: Date | string): string {
+  const date = typeof dateInput === 'string' ? new Date(dateInput) : dateInput;
   const diff = Date.now() - date.getTime();
   const secs = Math.floor(diff / 1000);
   if (secs < 60) return 'just now';
@@ -114,7 +115,8 @@ export function getRelativeTime(date: Date): string {
   return `${days} day${days !== 1 ? 's' : ''} ago`;
 }
 
-export function getDaysUntil(date: Date): string {
+export function getDaysUntil(dateInput: Date | string): string {
+  const date = typeof dateInput === 'string' ? new Date(dateInput) : dateInput;
   const diff = date.getTime() - Date.now();
   const days = Math.ceil(diff / 86400000);
   if (days === 0) return 'Today';
@@ -123,7 +125,8 @@ export function getDaysUntil(date: Date): string {
   return `In ${days} days`;
 }
 
-export function getDateLabel(date: Date): { month: string; day: string } {
+export function getDateLabel(dateInput: Date | string): { month: string; day: string } {
+  const date = typeof dateInput === 'string' ? new Date(dateInput) : dateInput;
   return {
     month: date.toLocaleString('en-US', { month: 'short' }).toUpperCase(),
     day: String(date.getDate()),
