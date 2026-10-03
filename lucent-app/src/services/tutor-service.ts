@@ -1,19 +1,41 @@
 // src/services/tutor-service.ts
-// AI Tutor service with document RAG and context-grounded citations
+// AI Tutor service with Gemini API integration, document RAG, and Supabase persistence
 import { tutorRepo, documentRepo, topicRepo, pyqRepo } from '../lib/db/repositories';
 import { TutorMessage } from '../lib/models/types';
 import { aiService } from './ai-service';
+import { geminiService } from './gemini-service';
+import { supabaseDb } from '@/lib/supabase/database';
 
 export interface TutorResponse {
   message: TutorMessage;
   contextSources: string[];
   suggestedQuestions: string[];
+  modelUsed?: string;
 }
 
 export class TutorService {
   /**
    * Retrieves full chat history for the active conversation.
    */
+  public async getConversationHistoryAsync(conversationId?: string): Promise<{ conversation: ReturnType<typeof tutorRepo.getDefaultConversation>; messages: TutorMessage[] }> {
+    const conv = tutorRepo.getDefaultConversation();
+    const activeId = conversationId || conv.id;
+
+    if (supabaseDb.isAvailable()) {
+      try {
+        const sbMessages = await supabaseDb.getTutorMessages(activeId);
+        if (sbMessages && sbMessages.length > 0) {
+          return { conversation: conv, messages: sbMessages };
+        }
+      } catch (err) {
+        console.warn('Could not read tutor messages from Supabase, falling back to local store:', err);
+      }
+    }
+
+    const messages = tutorRepo.getMessages(activeId);
+    return { conversation: conv, messages };
+  }
+
   public getConversationHistory(conversationId?: string): { conversation: ReturnType<typeof tutorRepo.getDefaultConversation>; messages: TutorMessage[] } {
     const conv = tutorRepo.getDefaultConversation();
     const messages = tutorRepo.getMessages(conversationId || conv.id);
@@ -27,21 +49,86 @@ export class TutorService {
     const conv = tutorRepo.getDefaultConversation();
     const activeConvId = conversationId || conv.id;
 
-    // 1. Record user message
+    // 1. Record user message locally and to Supabase
     await tutorRepo.addMessage({
       conversationId: activeConvId,
       role: 'user',
       content: userQuestion,
     });
 
+    if (supabaseDb.isAvailable()) {
+      supabaseDb.addTutorMessage({
+        conversationId: activeConvId,
+        role: 'user',
+        content: userQuestion,
+      }).catch((e) => console.warn('Supabase tutor message save error:', e));
+    }
+
     // 2. RAG Context Retrieval: Gather relevant documents, topics, and PYQs
-    const documents = documentRepo.getAll();
-    const topics = topicRepo.getAll();
+    let documents = documentRepo.getAll();
+    let topics = topicRepo.getAll();
     const pyqs = pyqRepo.getAll();
+
+    if (supabaseDb.isAvailable()) {
+      try {
+        const [sbDocs, sbTopics] = await Promise.all([
+          supabaseDb.getDocuments(),
+          supabaseDb.getTopics(),
+        ]);
+        if (sbDocs && sbDocs.length > 0) documents = sbDocs;
+        if (sbTopics && sbTopics.length > 0) topics = sbTopics;
+      } catch (e) {
+        console.warn('Supabase RAG fetch warning:', e);
+      }
+    }
 
     const qLower = userQuestion.toLowerCase();
 
-    // Find documents matching query
+    // Find related topics
+    const relatedTopic = topics.find((t) => qLower.includes(t.name.toLowerCase()));
+    if (relatedTopic) {
+      await tutorRepo.updateCurrentTopic(activeConvId, relatedTopic.id);
+    }
+
+    // 3. Attempt Gemini API Generation
+    if (geminiService.isAvailable()) {
+      const existingHistory = tutorRepo.getMessages(activeConvId);
+      const geminiResult = await geminiService.generateTutorResponse({
+        question: userQuestion,
+        conversationHistory: existingHistory,
+        documents,
+        topics,
+        pyqs,
+      });
+
+      if (geminiResult) {
+        const assistantMsg = await tutorRepo.addMessage({
+          conversationId: activeConvId,
+          role: 'assistant',
+          content: geminiResult.reply,
+          sources: geminiResult.sources,
+          suggestedQuestions: geminiResult.suggestedQuestions,
+        });
+
+        if (supabaseDb.isAvailable()) {
+          supabaseDb.addTutorMessage({
+            conversationId: activeConvId,
+            role: 'assistant',
+            content: geminiResult.reply,
+            sources: geminiResult.sources,
+          }).catch((e) => console.warn('Supabase assistant message save error:', e));
+        }
+
+        return {
+          message: assistantMsg,
+          contextSources: geminiResult.sources,
+          suggestedQuestions: geminiResult.suggestedQuestions,
+          modelUsed: geminiResult.modelUsed,
+        };
+      }
+    }
+
+    // 4. Fallback Heuristic / General AI engine
     const matchingDocs = documents.filter((d) => {
       const nameMatch = d.name.toLowerCase().split(/\W+/).some((w) => w.length > 2 && qLower.includes(w));
       const textMatch = d.rawText && d.rawText.toLowerCase().split(/\W+/).some((w) => w.length > 3 && qLower.includes(w));
@@ -50,17 +137,8 @@ export class TutorService {
 
     const contextDocs = matchingDocs.length > 0 ? matchingDocs : documents.slice(0, 3);
     const sources = contextDocs.map((d) => d.name);
-
-    // Find related topics
-    const relatedTopic = topics.find((t) => qLower.includes(t.name.toLowerCase()));
-    if (relatedTopic) {
-      await tutorRepo.updateCurrentTopic(activeConvId, relatedTopic.id);
-    }
-
-    // Related PYQ questions
     const matchingPyqs = pyqs.filter((p) => qLower.includes(p.questionText.toLowerCase().slice(0, 15)));
 
-    // 3. Construct System & User Prompt for RAG
     const systemPrompt = `
 You are the Lucent Academic Tutor.
 Your goal is to bring clarity to complex academic topics.
@@ -87,13 +165,9 @@ Student Question:
 Provide a clear, pedagogical response grounded in the above materials. If citing an exam or unit, mention the source name.
 `;
 
-    // 4. Generate answer
     const replyText = await aiService.generateText(fullPrompt, systemPrompt);
-
-    // 5. Generate contextual suggested follow-ups
     const suggestions = this.deriveSuggestions(userQuestion, relatedTopic?.name);
 
-    // 6. Save assistant message
     const assistantMsg = await tutorRepo.addMessage({
       conversationId: activeConvId,
       role: 'assistant',
@@ -102,10 +176,20 @@ Provide a clear, pedagogical response grounded in the above materials. If citing
       suggestedQuestions: suggestions,
     });
 
+    if (supabaseDb.isAvailable()) {
+      supabaseDb.addTutorMessage({
+        conversationId: activeConvId,
+        role: 'assistant',
+        content: replyText,
+        sources,
+      }).catch((e) => console.warn('Supabase fallback message save error:', e));
+    }
+
     return {
       message: assistantMsg,
       contextSources: sources,
       suggestedQuestions: suggestions,
+      modelUsed: 'heuristic-engine',
     };
   }
 

@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
     const searchParams = req.nextUrl.searchParams;
     const conversationId = searchParams.get('conversationId') || undefined;
 
-    const history = tutorService.getConversationHistory(conversationId);
+    const history = await tutorService.getConversationHistoryAsync(conversationId);
     return NextResponse.json({ success: true, ...history });
   } catch (error) {
     return NextResponse.json({ success: false, error: String(error) }, { status: 500 });

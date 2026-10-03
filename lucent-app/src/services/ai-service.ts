@@ -60,8 +60,28 @@ export class AiService {
   }
 
   private async callGemini(prompt: string, systemPrompt?: string): Promise<string> {
-    const model = process.env.AI_MODEL || 'gemini-1.5-flash';
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${this.geminiKey}`;
+    const model = process.env.GEMINI_MODEL || process.env.AI_MODEL || 'gemini-2.5-flash';
+
+    try {
+      const { GoogleGenAI } = await import('@google/genai');
+      const ai = new GoogleGenAI({ apiKey: this.geminiKey! });
+      const response = await ai.models.generateContent({
+        model,
+        contents: prompt,
+        config: {
+          systemInstruction: systemPrompt,
+          temperature: 0.2,
+        },
+      });
+      if (response.text) {
+        return response.text;
+      }
+    } catch (sdkError) {
+      console.warn('GoogleGenAI SDK call failed, trying direct REST fallback:', sdkError);
+    }
+
+    const fallbackModel = 'gemini-1.5-flash';
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${fallbackModel}:generateContent?key=${this.geminiKey}`;
 
     const contents = [];
     if (systemPrompt) {

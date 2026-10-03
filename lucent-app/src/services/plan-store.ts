@@ -129,6 +129,17 @@ class PlanStore {
     } catch (e) {
       console.warn('Could not persist active plan to file:', e);
     }
+
+    // Sync to Supabase in background if configured
+    import('@/lib/supabase/database')
+      .then(({ supabaseDb }) => {
+        if (supabaseDb.isAvailable()) {
+          supabaseDb.saveActivePlan(state).catch((err) => {
+            console.warn('Supabase plan save error:', err);
+          });
+        }
+      })
+      .catch(() => {});
   }
 }
 

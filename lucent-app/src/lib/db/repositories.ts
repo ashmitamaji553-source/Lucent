@@ -26,16 +26,26 @@ export const userRepo = {
     return data.users[0];
   },
   async updateUser(updates: Partial<User>): Promise<User> {
-    return db.update((data) => {
+    const updated = await db.update((data) => {
       const u = data.users[0];
-      const updated: User = {
+      const res: User = {
         ...u,
         ...updates,
         updatedAt: new Date().toISOString(),
       };
-      data.users[0] = updated;
-      return updated;
+      data.users[0] = res;
+      return res;
     });
+
+    import('@/lib/supabase/database')
+      .then(({ supabaseDb }) => {
+        if (supabaseDb.isAvailable()) {
+          supabaseDb.updateUser(updates).catch((e) => console.warn('Supabase user sync error:', e));
+        }
+      })
+      .catch(() => {});
+
+    return updated;
   },
 };
 
@@ -50,7 +60,7 @@ export const courseRepo = {
     return db.read().courses.find((c) => c.name.toLowerCase() === name.toLowerCase());
   },
   async create(course: Omit<Course, 'id' | 'createdAt' | 'updatedAt'>): Promise<Course> {
-    return db.update((data) => {
+    const created = await db.update((data) => {
       const now = new Date().toISOString();
       const newCourse: Course = {
         id: `c_${Date.now()}`,
@@ -61,6 +71,16 @@ export const courseRepo = {
       data.courses.push(newCourse);
       return newCourse;
     });
+
+    import('@/lib/supabase/database')
+      .then(({ supabaseDb }) => {
+        if (supabaseDb.isAvailable()) {
+          supabaseDb.createCourse(course).catch((e) => console.warn('Supabase course sync error:', e));
+        }
+      })
+      .catch(() => {});
+
+    return created;
   },
 };
 
@@ -74,15 +94,25 @@ export const documentRepo = {
     return db.read().documents.find((d) => d.id === id);
   },
   async create(doc: Omit<Document, 'id' | 'uploadedAt'>): Promise<Document> {
-    return db.update((data) => {
-      const newDoc: Document = {
+    const newDoc = await db.update((data) => {
+      const created: Document = {
         id: `doc_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
         uploadedAt: new Date().toISOString(),
         ...doc,
       };
-      data.documents.unshift(newDoc);
-      return newDoc;
+      data.documents.unshift(created);
+      return created;
     });
+
+    import('@/lib/supabase/database')
+      .then(({ supabaseDb }) => {
+        if (supabaseDb.isAvailable()) {
+          supabaseDb.createDocument(newDoc).catch((e) => console.warn('Supabase document sync error:', e));
+        }
+      })
+      .catch(() => {});
+
+    return newDoc;
   },
   async updateStatus(id: string, status: Document['status'], metadata?: Document['metadata']): Promise<Document | undefined> {
     return db.update((data) => {
