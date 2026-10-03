@@ -1,34 +1,41 @@
+/*
+  Topbar — no glassmorphism, no blur
+  Clean ruled line. Search is a plain underline input, not a pill.
+  Profile area minimal.
+*/
 .topbar {
-  height: 68px;
-  padding: 0 28px;
+  height: 56px;
+  padding: 0 32px;
   display: flex;
   align-items: center;
-  border-bottom: 1px solid rgba(62, 37, 33, 0.08);
-  background: rgba(245, 241, 230, 0.88);
-  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--sand);
+  background: var(--cream);
   position: sticky;
   top: 0;
   z-index: 10;
   flex: none;
+  gap: 20px;
 }
 
+/* Search — underline style, not pill */
 .search {
-  width: min(430px, 52vw);
-  height: 37px;
-  border: 1px solid rgba(62, 37, 33, 0.1);
-  border-radius: 20px;
-  background: rgba(255, 253, 248, 0.8);
-  padding: 0 14px;
   display: flex;
   align-items: center;
-  gap: 9px;
-  color: var(--m);
-  cursor: text;
+  gap: 8px;
+  width: min(380px, 44vw);
+  color: var(--stone);
+  border-bottom: 1px solid var(--sand);
+  padding: 4px 0;
   transition: border-color 0.15s;
 }
 
 .search:focus-within {
-  border-color: var(--r);
+  border-bottom-color: var(--ink);
+}
+
+.search svg {
+  flex: none;
+  opacity: 0.5;
 }
 
 .searchInput {
@@ -36,12 +43,13 @@
   outline: 0;
   background: transparent;
   width: 100%;
-  color: var(--e);
-  font-size: 14px;
+  color: var(--ink);
+  font-size: 13.5px;
 }
 
 .searchInput::placeholder {
-  color: var(--m);
+  color: var(--stone);
+  font-size: 13.5px;
 }
 
 .searchWrapper {
@@ -54,20 +62,21 @@
   left: 0;
   width: 100%;
   min-width: 320px;
-  background: #FFFDF8;
-  border: 1px solid var(--l);
-  border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(62, 37, 33, 0.12);
-  padding: 8px 0;
+  background: var(--cream, #FFFDF8);
+  border: 1px solid var(--sand, #e6ded3);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  padding: 6px 0;
   z-index: 50;
   overflow: hidden;
 }
 
 .resultItem {
   display: block;
-  padding: 10px 16px;
-  border-bottom: 1px solid rgba(62, 37, 33, 0.05);
+  padding: 8px 14px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
   transition: background 0.15s;
+  text-decoration: none;
 }
 
 .resultItem:last-child {
@@ -75,69 +84,67 @@
 }
 
 .resultItem:hover {
-  background: rgba(217, 143, 154, 0.12);
+  background: rgba(0, 0, 0, 0.04);
 }
 
 .resultTitle {
   font-size: 13px;
-  font-weight: 600;
-  color: var(--e);
+  font-weight: 500;
+  color: var(--ink);
 }
 
 .resultMeta {
   font-size: 11px;
-  color: var(--m);
+  color: var(--stone);
   margin-top: 2px;
 }
 
+/* Profile — right side, very quiet */
 .profile {
   margin-left: auto;
   display: flex;
   align-items: center;
-  gap: 9px;
-  font-size: 13px;
-  color: var(--e);
+  gap: 14px;
 }
 
 .iconBtn {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  color: var(--m);
-  transition: background 0.15s;
+  color: var(--stone);
+  display: flex;
+  align-items: center;
+  transition: color 0.12s;
+  padding: 2px;
 }
 
 .iconBtn:hover {
-  background: rgba(217, 143, 154, 0.15);
-  color: var(--e);
+  color: var(--ink);
 }
 
+/* Avatar — square, not circle. More distinctive. */
 .avatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: var(--t);
-  color: white;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--r-sm);
+  background: var(--terracotta);
+  color: #FBF0EA;
   display: grid;
   place-items: center;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
+  letter-spacing: 0.02em;
 }
 
 .name {
+  font-size: 13px;
   font-weight: 500;
+  color: var(--clay);
 }
 
-@media (max-width: 580px) {
-  .topbar {
-    padding: 0 16px;
-  }
-  .search {
-    width: 100%;
-  }
-  .profile {
-    display: none;
-  }
+@media (max-width: 900px) {
+  .topbar { padding: 0 20px; }
+}
+
+@media (max-width: 600px) {
+  .topbar { padding: 0 16px; gap: 12px; }
+  .search { width: 100%; }
+  .name { display: none; }
 }

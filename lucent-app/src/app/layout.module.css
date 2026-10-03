@@ -12,11 +12,10 @@
   overflow: hidden;
 }
 
+/* Clean background — no gradient blob */
 .main {
   flex: 1;
   overflow-y: auto;
+  background: var(--cream);
   position: relative;
-  background:
-    radial-gradient(circle at 75% 7%, #d98f9a16, transparent 24%),
-    var(--i);
 }

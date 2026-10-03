@@ -1,102 +1,112 @@
-.insights {
+/*
+  Stats strip — not cards.
+  Values live directly on the page, divided by thin rules.
+  This replaces the four identical rounded boxes.
+*/
+.strip {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-  margin: 18px 0;
+  grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr;
+  align-items: center;
+  padding: 28px 32px;
+  border-bottom: 1px solid var(--sand);
+  background: var(--paper);
 }
 
-.insight {
-  min-height: 124px;
-  border: 1px solid var(--l);
-  border-radius: 14px;
-  background: rgba(244, 237, 228, 0.66);
-  padding: 17px 18px;
-  position: relative;
-  transition: box-shadow 0.15s;
+.divider {
+  width: 1px;
+  height: 48px;
+  background: var(--sand);
+  margin: 0 32px;
 }
 
-.insight:hover {
-  box-shadow: 0 2px 12px rgba(62, 37, 33, 0.07);
-}
-
-.pink {
-  background: rgba(242, 201, 212, 0.68);
-}
-
-.dark {
-  background: var(--e);
-  color: #fff7ef;
-  border-color: var(--e);
-}
-
-.dark .sub {
-  opacity: 0.65;
-}
-
-.label {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-}
-
-.value {
-  font-family: var(--font-serif);
-  font-size: 30px;
-  line-height: 1;
-  margin-top: 16px;
-}
-
-.sub {
-  font-size: 12px;
-  margin-top: 6px;
-  opacity: 0.74;
-}
-
-.arrow {
-  position: absolute;
-  right: 15px;
-  bottom: 16px;
-  width: 28px;
-  height: 28px;
-  border: 1px solid currentColor;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  opacity: 0.65;
-  font-size: 13px;
+.stat {
   text-decoration: none;
   color: inherit;
-  transition: opacity 0.15s;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  /* Hover is subtle — just a color shift on the action link */
 }
 
-.arrow:hover {
-  opacity: 1;
+.stat:hover .statAction {
+  color: var(--blush);
 }
 
-/* Progress bar */
-.track {
-  height: 7px;
-  background: #e7ded3;
-  border-radius: 99px;
+.statValue {
+  font-family: var(--serif);
+  font-size: 36px;
+  line-height: 1;
+  color: var(--ink);
+  letter-spacing: -0.03em;
+}
+
+.statLabel {
+  font-size: 12px;
+  color: var(--stone);
+  margin-top: 2px;
+}
+
+.statAction {
+  font-size: 11px;
+  color: var(--clay);
+  margin-top: 6px;
+  transition: color 0.12s;
+}
+
+.statSub {
+  font-size: 11px;
+  color: var(--stone);
+  margin-top: 6px;
+}
+
+/* Readiness — inline with small indicator */
+.readinessRow {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.readinessMark {
+  height: 4px;
+  width: 60px;
+  background: var(--sand);
+  border-radius: 0; /* intentionally sharp */
+  position: relative;
+  margin-bottom: 8px;
   overflow: hidden;
 }
 
-.fill {
+.readinessMark::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
   height: 100%;
-  border-radius: 99px;
-  transition: width 0.6s ease;
+  width: var(--pct);
+  background: var(--sage);
 }
-
-.rose { background: var(--d); }
 
 @media (max-width: 1100px) {
-  .insights {
+  .strip {
     grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 0;
+    padding: 0;
   }
+  .stat {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--sand);
+  }
+  .stat:nth-child(odd):not(.divider) {
+    border-right: 1px solid var(--sand);
+  }
+  .divider { display: none; }
 }
 
-@media (max-width: 580px) {
-  .insights {
-    grid-template-columns: 1fr;
+@media (max-width: 600px) {
+  .strip {
+    grid-template-columns: 1fr 1fr;
   }
+  .stat { padding: 16px; }
+  .statValue { font-size: 28px; }
 }

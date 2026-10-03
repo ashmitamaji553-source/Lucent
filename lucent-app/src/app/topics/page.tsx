@@ -41,9 +41,8 @@ export default function TopicsPage() {
   return (
     <div className={styles.page}>
       <div className={styles.header}>
-        <div className={styles.eyebrow}>ACADEMIC KNOWLEDGE MAP</div>
         <h1 className={styles.heading}>Topic Map</h1>
-        <p className={styles.desc}>Navigate your curriculum. See what you know, and what needs attention.</p>
+        <p className={styles.desc}>Navigate your curriculum. See where your coverage gaps are.</p>
       </div>
 
       <div className={styles.layout}>

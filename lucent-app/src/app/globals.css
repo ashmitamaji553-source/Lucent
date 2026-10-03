@@ -1,39 +1,106 @@
-/* Lucent Design System — globals.css */
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Serif+Display:ital@0;1&display=swap');
+/* Lucent — Design System
+   One typeface family: DM Serif Display (editorial) + DM Sans (utility)
+   Palette: warm espresso browns, ivory, one dusty rose accent
+   Philosophy: typography leads, components serve, cards are earned
+*/
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Serif+Display:ital@0;1&display=swap');
 
 :root {
-  --e: #3E2521;
-  --c: #2B1917;
-  --i: #F5F1E6;
-  --cr: #F4EDE4;
-  --r: #D98F9A;
-  --b: #F2C9D4;
-  --t: #A2725E;
-  --s: #879B82;
-  --h: #C69A62;
-  --d: #B96F73;
-  --m: #745F5A;
-  --l: #D8C9C1;
-  --font-serif: 'DM Serif Display', Georgia, serif;
-  --font-sans: 'DM Sans', system-ui, sans-serif;
+  /* Palette — restrained */
+  --ink:     #2C1F1B;   /* deep warm black — primary text */
+  --bark:    #2B1917;   /* sidebar, strongest surfaces */
+  --clay:    #5A3A30;   /* secondary text, muted headings */
+  --stone:   #8A7068;   /* tertiary text, placeholders */
+  --sand:    #D4C5BB;   /* borders, dividers */
+  --cream:   #F5F1E8;   /* page background */
+  --paper:   #FAF7F2;   /* elevated surface */
+  --blush:   #D4818E;   /* one accent — use sparingly */
+  --blush-subtle: #F0D5D9; /* tint for states */
+  --sage:    #7A9175;   /* success / strong coverage */
+  --honey:   #B8924A;   /* warning / partial coverage */
+  --rose:    #A85860;   /* danger / weak coverage */
+  --terracotta: #9B6248; /* secondary accent */
+
+  /* Typography */
+  --serif: 'DM Serif Display', Georgia, serif;
+  --sans: 'DM Sans', system-ui, -apple-system, sans-serif;
+
+  /* Spacing rhythm — 4px base */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-8: 32px;
+  --sp-10: 40px;
+  --sp-12: 48px;
+  --sp-16: 64px;
+
+  /* Radius — intentionally varied, not uniform */
+  --r-none: 0px;
+  --r-sm: 3px;
+  --r-md: 6px;
+  --r-lg: 10px;
+
+  /* Shadows — very restrained */
+  --shadow-border: 0 0 0 1px var(--sand);
+  --shadow-lift: 0 1px 4px rgba(44, 31, 27, 0.06), 0 4px 16px rgba(44, 31, 27, 0.04);
 }
 
-*, *::before, *::after { box-sizing: border-box; }
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
-html, body {
-  margin: 0; padding: 0; height: 100%;
-  background: var(--i);
-  color: var(--e);
-  font-family: var(--font-sans);
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-weight: 400;
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-button, input, textarea, select { font: inherit; }
-button { cursor: pointer; border: none; background: none; }
-a { color: inherit; text-decoration: none; }
-h1, h2, h3, h4, h5, h6, p { margin: 0; }
-img { max-width: 100%; display: block; }
+/* Interactive elements inherit font */
+button, input, textarea, select {
+  font: inherit;
+  color: inherit;
+}
 
-::-webkit-scrollbar { width: 5px; height: 5px; }
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  padding: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+h1, h2, h3, h4, h5, h6 { line-height: 1.15; }
+
+img, svg { display: block; max-width: 100%; }
+
+/* Scrollbar — minimal */
+::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #d8c9c1; border-radius: 99px; }
+::-webkit-scrollbar-thumb {
+  background: var(--sand);
+  border-radius: var(--r-sm);
+}
+
+/* Focus — accessible, not intrusive */
+:focus-visible {
+  outline: 2px solid var(--blush);
+  outline-offset: 2px;
+}

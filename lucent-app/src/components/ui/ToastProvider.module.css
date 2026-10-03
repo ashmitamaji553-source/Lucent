@@ -1,19 +1,20 @@
+/* Toast — flat bottom-right notification. No heavy shadow, no pill. */
 .toast {
   position: fixed;
-  right: 22px;
-  bottom: 22px;
-  background: var(--e);
-  color: #fff7ef;
-  border-radius: 10px;
-  padding: 12px 16px;
+  right: 20px;
+  bottom: 20px;
+  background: var(--ink);
+  color: #FAF5F0;
+  border-radius: var(--r-sm);
+  padding: 11px 16px;
   font-size: 13px;
+  line-height: 1.4;
   opacity: 0;
-  transform: translateY(10px);
-  transition: 0.25s;
+  transform: translateY(6px);
+  transition: opacity 0.22s, transform 0.22s;
   z-index: 1000;
   pointer-events: none;
-  max-width: 320px;
-  line-height: 1.4;
+  max-width: 300px;
 }
 
 .show {

@@ -7,39 +7,43 @@ export default function SignalCards() {
   const { signals: s } = useLucent();
 
   return (
-    <section className={styles.insights} aria-label="Quick signals">
-      <article className={`${styles.insight} ${styles.pink}`}>
-        <div className={styles.label}>▱ &nbsp; WHAT AM I MISSING?</div>
-        <div className={styles.value}>{s.missingTopics} topics</div>
-        <div className={styles.sub}>need attention</div>
-        <Link href="/topics" className={styles.arrow} aria-label="View missing topics">→</Link>
-      </article>
+    <section className={styles.strip} aria-label="Coverage signals">
+      {/* Stat 1 */}
+      <Link href="/topics" className={styles.stat}>
+        <div className={styles.statValue}>{s.missingTopics}</div>
+        <div className={styles.statLabel}>topics need attention</div>
+        <div className={styles.statAction}>Review gaps →</div>
+      </Link>
 
-      <article className={styles.insight}>
-        <div className={styles.label}>♧ &nbsp; WHAT CHANGED?</div>
-        <div className={styles.value}>{s.updatedNotices} updated</div>
-        <div className={styles.sub}>notices/deadlines</div>
-        <Link href="/materials" className={styles.arrow} aria-label="View updates">→</Link>
-      </article>
+      <div className={styles.divider} />
 
-      <article className={`${styles.insight} ${styles.dark}`}>
-        <div className={styles.label}>✦ &nbsp; WHAT MATTERS?</div>
-        <div className={styles.value}>{s.highPriorityTopics} high-priority</div>
-        <div className={styles.sub}>topics to focus on</div>
-        <Link href="/plan" className={styles.arrow} aria-label="View priorities">→</Link>
-      </article>
+      {/* Stat 2 */}
+      <Link href="/materials" className={styles.stat}>
+        <div className={styles.statValue}>{s.updatedNotices}</div>
+        <div className={styles.statLabel}>updated notices</div>
+        <div className={styles.statAction}>See changes →</div>
+      </Link>
 
-      <article className={styles.insight}>
-        <div className={styles.label}>▥ &nbsp; OVERALL READINESS</div>
-        <div className={styles.value}>{s.overallReadiness}%</div>
-        <div className={styles.sub}>course coverage</div>
-        <div className={styles.track} style={{ marginTop: 9 }}>
-          <div
-            className={`${styles.fill} ${styles.rose}`}
-            style={{ width: `${s.overallReadiness}%` }}
-          />
+      <div className={styles.divider} />
+
+      {/* Stat 3 */}
+      <Link href="/plan" className={styles.stat}>
+        <div className={styles.statValue}>{s.highPriorityTopics}</div>
+        <div className={styles.statLabel}>high-priority topics</div>
+        <div className={styles.statAction}>Open study plan →</div>
+      </Link>
+
+      <div className={styles.divider} />
+
+      {/* Readiness — with inline bar */}
+      <div className={styles.stat}>
+        <div className={styles.readinessRow}>
+          <div className={styles.statValue}>{s.overallReadiness}%</div>
+          <div className={styles.readinessMark} style={{ '--pct': `${s.overallReadiness}%` } as React.CSSProperties} />
         </div>
-      </article>
+        <div className={styles.statLabel}>overall readiness</div>
+        <div className={styles.statSub}>across all subjects</div>
+      </div>
     </section>
   );
 }

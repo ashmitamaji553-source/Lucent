@@ -1,57 +1,51 @@
+/* Recent uploads — thin bordered panel with right edge accent */
 .panel {
-  background: rgba(255, 253, 248, 0.76);
-  border: 1px solid var(--l);
-  border-radius: 14px;
-  padding: 22px;
+  border-top: 2px solid var(--ink);
+  padding: 24px 0 0;
 }
 
 .title {
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--e);
-  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.01em;
 }
 
 .subtext {
-  font-size: 13px;
-  color: var(--m);
-  margin: 5px 0 18px;
+  font-size: 12px;
+  color: var(--stone);
+  margin: 4px 0 16px;
 }
 
 .file {
   display: flex;
   align-items: center;
-  gap: 11px;
-  padding: 11px 0;
-  border-bottom: 1px solid rgba(62, 37, 33, 0.05);
+  gap: 12px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--sand);
 }
 
-.file:last-child {
-  border-bottom: none;
-}
+.file:last-child { border-bottom: none; }
 
 .ficon {
-  width: 31px;
-  height: 31px;
-  border-radius: 8px;
-  background: #f2d9d8;
+  width: 26px;
+  height: 26px;
+  border-radius: var(--r-sm);
+  background: var(--blush-subtle);
   display: grid;
   place-items: center;
-  color: #a64f55;
-  font-size: 9px;
+  color: var(--rose);
+  font-size: 8px;
   font-weight: 700;
   flex: none;
 }
 
-.finfo {
-  flex: 1;
-  min-width: 0;
-}
+.finfo { flex: 1; min-width: 0; }
 
 .fname {
   font-size: 13px;
-  font-weight: 600;
-  color: var(--e);
+  font-weight: 500;
+  color: var(--ink);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -59,14 +53,15 @@
 
 .fmeta {
   font-size: 11px;
-  color: var(--m);
+  color: var(--stone);
   margin-top: 2px;
 }
 
+/* Small dot indicator — no pill badge */
 .dot {
-  width: 8px;
-  height: 8px;
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
-  background: var(--s);
+  background: var(--sage);
   flex: none;
 }

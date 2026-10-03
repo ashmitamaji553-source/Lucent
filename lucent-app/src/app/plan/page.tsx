@@ -81,21 +81,20 @@ export default function PlanPage() {
       <div className={styles.header}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <div>
-            <div className={styles.eyebrow}>PRIORITISED FOR YOU</div>
             <h1 className={styles.heading}>Study Plan</h1>
-            <p className={styles.desc}>Your focus for today and the days ahead, based on your materials and deadlines.</p>
+            <p className={styles.desc}>Prioritised for today and the days ahead, based on your materials and deadlines.</p>
           </div>
           <button
             onClick={handleRegenerate}
             disabled={isRegenerating}
             style={{
-              padding: '10px 16px',
-              borderRadius: '9px',
-              border: '1px solid var(--l)',
-              background: 'rgba(255, 253, 248, 0.8)',
-              fontSize: '13px',
-              fontWeight: 600,
-              color: 'var(--e)',
+              padding: '8px 14px',
+              borderRadius: '6px',
+              border: '1px solid var(--border)',
+              background: 'var(--card-bg, #fff)',
+              fontSize: '12px',
+              fontWeight: 500,
+              color: 'inherit',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',

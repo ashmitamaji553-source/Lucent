@@ -1,108 +1,102 @@
+/*
+  Sidebar — flat dark surface, no gradient
+  Nav items use left-border for active state instead of pill backgrounds
+  Compact, typographic, not decorative
+*/
 .sidebar {
-  width: 236px;
+  width: 220px;
   flex: none;
-  background: linear-gradient(180deg, var(--c), #452824);
-  color: #f9ede6;
-  padding: 28px 18px;
+  background: var(--bark);
+  color: #E8D9D2;
+  padding: 0;
   display: flex;
   flex-direction: column;
-  z-index: 5;
-  overflow: hidden;
+  z-index: 10;
+  border-right: 1px solid rgba(255,255,255,0.06);
 }
 
 .brand {
-  padding: 0 6px 30px;
+  padding: 28px 20px 24px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
 }
 
 .logo {
-  font-family: var(--font-serif);
-  font-size: 27px;
-  letter-spacing: 0.13em;
-  color: #f9ede6;
+  font-family: var(--serif);
+  font-size: 22px;
+  letter-spacing: 0.08em;
+  color: #F5EDE8;
+  line-height: 1;
 }
 
 .tag {
   font-size: 11px;
-  color: #ddbeb6;
-  margin-top: 6px;
-  line-height: 1.4;
+  color: #9C7B72;
+  margin-top: 5px;
+  letter-spacing: 0.01em;
 }
 
 .nav {
-  display: grid;
-  gap: 4px;
+  display: flex;
+  flex-direction: column;
+  padding: 12px 0;
+  flex: 1;
 }
 
 .navItem {
-  border: 0;
-  background: transparent;
-  color: #f4e4de;
-  padding: 11px 13px;
-  border-radius: 10px;
-  text-align: left;
   display: flex;
   align-items: center;
-  gap: 12px;
-  font-size: 14px;
-  font-family: var(--font-sans);
-  transition: background 0.15s, color 0.15s;
+  gap: 10px;
+  padding: 9px 20px;
+  font-size: 13.5px;
+  font-weight: 400;
+  color: #B09088;
   text-decoration: none;
+  border-left: 2px solid transparent;
+  transition: color 0.12s, border-color 0.12s, background 0.12s;
+  letter-spacing: 0.01em;
 }
 
 .navItem:hover {
-  background: rgba(217, 143, 154, 0.22);
-  color: #fff;
+  color: #F0E4DF;
+  background: rgba(255, 255, 255, 0.04);
 }
 
+/* Active: left border accent, not pill background */
 .active {
-  background: rgba(217, 143, 154, 0.3);
-  color: #fff;
+  color: #F0E4DF;
+  border-left-color: var(--blush);
+  background: rgba(212, 129, 142, 0.1);
 }
 
 .ico {
-  width: 18px;
+  width: 16px;
   text-align: center;
   flex: none;
-  font-size: 15px;
-  opacity: 0.85;
+  font-size: 13px;
+  opacity: 0.7;
 }
 
 .divide {
   height: 1px;
-  background: rgba(255, 255, 255, 0.11);
-  margin: 28px 6px 18px;
+  background: rgba(255, 255, 255, 0.07);
+  margin: 8px 20px;
 }
 
 .bottom {
-  margin-top: auto;
+  padding-bottom: 12px;
 }
 
-@media (max-width: 820px) {
-  .sidebar {
-    width: 72px;
-  }
-  .brand {
-    padding: 0 0 28px;
-    text-align: center;
-  }
-  .logo {
-    font-size: 18px;
-    letter-spacing: 0.06em;
-  }
-  .tag {
-    display: none;
-  }
-  .navItem {
-    justify-content: center;
-    padding: 11px 6px;
-  }
-  .navItem span:last-child {
-    display: none;
-  }
+/* Tablet — icon-only, labels hidden */
+@media (max-width: 900px) {
+  .sidebar { width: 56px; }
+  .brand { padding: 20px 0 16px; text-align: center; }
+  .logo { font-size: 14px; letter-spacing: 0.04em; }
+  .tag { display: none; }
+  .navItem { padding: 10px; justify-content: center; }
+  .navItem span:not(.ico) { display: none; }
+  .divide { margin: 8px 10px; }
 }
 
-@media (max-width: 580px) {
-  .sidebar {
-    display: none;
-  }
+@media (max-width: 600px) {
+  .sidebar { display: none; }
 }

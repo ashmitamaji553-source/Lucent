@@ -66,7 +66,6 @@ export default function SettingsPage() {
   return (
     <div className={styles.page}>
       <div className={styles.header}>
-        <div className={styles.eyebrow}>PREFERENCES</div>
         <h1 className={styles.heading}>Settings</h1>
         <p className={styles.desc}>Manage your account and workspace preferences.</p>
       </div>

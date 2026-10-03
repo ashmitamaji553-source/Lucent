@@ -26,23 +26,20 @@ export default function Hero() {
 
   return (
     <section className={styles.hero}>
-      {/* Prism atmospheric effects */}
-      <div className={styles.prism1} aria-hidden="true" />
-      <div className={styles.prism2} aria-hidden="true" />
-
       <div className={styles.copy}>
-        <div className={styles.eyebrow}>YOUR ACADEMIC COMPASS</div>
+        {/* No "YOUR ACADEMIC COMPASS" — the heading does that job */}
+        <div className={styles.eyebrow} aria-hidden="true">Study workspace</div>
         <h1 className={styles.heading}>
           Bring the<br />
           hidden to <em className={styles.accent}>light.</em>
         </h1>
         <p className={styles.desc}>
-          Upload your study material, and let Lucent show you what you know,
-          what you're missing, and what truly matters.
+          Upload your syllabus, notes, and past papers.
+          Lucent tells you exactly where your coverage gaps are.
         </p>
         <div className={styles.actions}>
           <button className={styles.primary} onClick={handleUpload}>
-            ↑&nbsp; Upload My Materials &nbsp;→
+            Upload materials
           </button>
           <input
             id="hero-upload"
@@ -53,7 +50,7 @@ export default function Hero() {
             onChange={handleFileChange}
           />
           <Link href="/topics" className={styles.secondary}>
-            ▷&nbsp; See a Demo
+            Explore topic map
           </Link>
         </div>
       </div>
