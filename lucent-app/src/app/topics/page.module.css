@@ -1,0 +1,352 @@
+.page {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 36px 26px 40px;
+}
+
+.header {
+  margin-bottom: 28px;
+}
+
+.eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.17em;
+  color: #a14d55;
+  margin-bottom: 10px;
+}
+
+.heading {
+  font-family: var(--font-serif);
+  font-size: 42px;
+  font-weight: 400;
+  color: var(--e);
+  line-height: 1.1;
+  margin-bottom: 10px;
+}
+
+.desc {
+  font-size: 16px;
+  color: var(--m);
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 200px 1fr 260px;
+  gap: 14px;
+  align-items: start;
+}
+
+/* Subjects sidebar */
+.subjects {
+  background: rgba(255, 253, 248, 0.76);
+  border: 1px solid var(--l);
+  border-radius: 14px;
+  padding: 16px;
+  position: sticky;
+  top: 90px;
+}
+
+.sectionLabel {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--m);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  padding: 0 4px;
+}
+
+.subjectBtn {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 9px 10px;
+  border-radius: 9px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--e);
+  text-align: left;
+  transition: background 0.13s;
+  gap: 6px;
+  margin-bottom: 2px;
+}
+
+.subjectBtn:hover {
+  background: rgba(217, 143, 154, 0.12);
+}
+
+.selectedSubject {
+  background: rgba(217, 143, 154, 0.22);
+}
+
+/* Coverage badges */
+.badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 99px;
+  white-space: nowrap;
+}
+
+.badge.sm {
+  font-size: 9px;
+}
+
+.good {
+  background: rgba(135, 155, 130, 0.18);
+  color: #4a6647;
+}
+
+.mid {
+  background: rgba(198, 154, 98, 0.18);
+  color: #7a5c2a;
+}
+
+.weak {
+  background: rgba(185, 111, 115, 0.18);
+  color: #8b3f43;
+}
+
+/* Topic tree */
+.tree {
+  background: rgba(255, 253, 248, 0.76);
+  border: 1px solid var(--l);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.treeHeader {
+  padding: 18px 20px;
+  border-bottom: 1px solid rgba(62, 37, 33, 0.07);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.treeName {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--e);
+}
+
+.treeCoverage {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--m);
+}
+
+.treeCoverage strong {
+  font-size: 20px;
+  font-family: var(--font-serif);
+  color: var(--e);
+}
+
+.treeBody {
+  padding: 8px 0;
+}
+
+.topicRow {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--e);
+  transition: background 0.12s;
+  text-align: left;
+  gap: 12px;
+}
+
+.topicRow:hover {
+  background: rgba(217, 143, 154, 0.08);
+}
+
+.selectedTopic {
+  background: rgba(217, 143, 154, 0.15);
+}
+
+.topicLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.topicRight {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.miniTrack {
+  width: 80px;
+  height: 5px;
+  background: #e7ded3;
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.miniFill {
+  height: 100%;
+  border-radius: 99px;
+  transition: width 0.5s ease;
+}
+
+.miniFill.good { background: var(--s); }
+.miniFill.mid { background: var(--h); }
+.miniFill.weak { background: var(--d); }
+
+.pct {
+  font-size: 11px;
+  color: var(--m);
+  min-width: 30px;
+  text-align: right;
+}
+
+.childRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 20px 7px 44px;
+  font-size: 12px;
+  color: var(--m);
+  border-bottom: 1px solid rgba(62, 37, 33, 0.04);
+}
+
+.childName {
+  font-size: 12px;
+}
+
+/* Detail panel */
+.detail {
+  background: rgba(255, 253, 248, 0.76);
+  border: 1px solid var(--l);
+  border-radius: 14px;
+  padding: 20px;
+  position: sticky;
+  top: 90px;
+}
+
+.detailTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--e);
+  margin-bottom: 16px;
+  line-height: 1.3;
+}
+
+.detailRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 9px 0;
+  border-bottom: 1px solid rgba(62, 37, 33, 0.06);
+}
+
+.detailLabel {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--m);
+  text-transform: uppercase;
+}
+
+.freqBadge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 99px;
+}
+
+.freqHigh {
+  background: rgba(185, 111, 115, 0.15);
+  color: #8b3f43;
+}
+
+.freqMed {
+  background: rgba(198, 154, 98, 0.15);
+  color: #7a5c2a;
+}
+
+.diffBadge {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--m);
+  background: #ece5db;
+  padding: 3px 8px;
+  border-radius: 99px;
+}
+
+.missing {
+  margin-top: 16px;
+  padding: 13px;
+  background: rgba(242, 201, 212, 0.25);
+  border-radius: 9px;
+  border: 1px solid rgba(217, 143, 154, 0.2);
+}
+
+.missingLabel {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--d);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.missingText {
+  font-size: 12px;
+  color: var(--m);
+  line-height: 1.5;
+}
+
+.subtopics {
+  margin-top: 16px;
+}
+
+.subRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 7px 0;
+  font-size: 12px;
+  border-bottom: 1px solid rgba(62, 37, 33, 0.05);
+}
+
+/* Node styles */
+.node { position: relative; }
+.nodeBtn {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 10px; border-radius: 8px; font-size: 13px;
+  width: 100%; text-align: left; transition: background 0.12s;
+}
+.nodeBtn:hover { background: rgba(217, 143, 154, 0.1); }
+.chevron { font-size: 14px; transition: transform 0.15s; opacity: 0.6; }
+.chevron.open { transform: rotate(90deg); }
+.leaf { opacity: 0.4; }
+.nodeName { flex: 1; }
+
+@media (max-width: 1100px) {
+  .layout {
+    grid-template-columns: 180px 1fr;
+  }
+  .detail {
+    grid-column: 1 / -1;
+    position: static;
+  }
+}
+
+@media (max-width: 820px) {
+  .layout { grid-template-columns: 1fr; }
+  .subjects { position: static; }
+}
+
+@media (max-width: 580px) {
+  .page { padding: 24px 14px 30px; }
+  .heading { font-size: 32px; }
+}

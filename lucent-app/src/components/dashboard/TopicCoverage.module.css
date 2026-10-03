@@ -1,0 +1,52 @@
+.panel {
+  background: rgba(255, 253, 248, 0.76);
+  border: 1px solid var(--l);
+  border-radius: 14px;
+  padding: 22px;
+}
+
+.title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--e);
+  margin: 0 0 14px;
+}
+
+.coverage {
+  margin-bottom: 14px;
+}
+
+.coverage:last-child {
+  margin-bottom: 0;
+}
+
+.chead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  margin-bottom: 7px;
+  color: var(--e);
+}
+
+.pct {
+  font-weight: 600;
+  color: var(--m);
+}
+
+.track {
+  height: 7px;
+  background: #e7ded3;
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.fill {
+  height: 100%;
+  border-radius: 99px;
+  transition: width 0.8s ease;
+}
+
+.sage { background: var(--s); }
+.honey { background: var(--h); }
+.rose { background: var(--d); }

@@ -1,0 +1,102 @@
+.insights {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin: 18px 0;
+}
+
+.insight {
+  min-height: 124px;
+  border: 1px solid var(--l);
+  border-radius: 14px;
+  background: rgba(244, 237, 228, 0.66);
+  padding: 17px 18px;
+  position: relative;
+  transition: box-shadow 0.15s;
+}
+
+.insight:hover {
+  box-shadow: 0 2px 12px rgba(62, 37, 33, 0.07);
+}
+
+.pink {
+  background: rgba(242, 201, 212, 0.68);
+}
+
+.dark {
+  background: var(--e);
+  color: #fff7ef;
+  border-color: var(--e);
+}
+
+.dark .sub {
+  opacity: 0.65;
+}
+
+.label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+}
+
+.value {
+  font-family: var(--font-serif);
+  font-size: 30px;
+  line-height: 1;
+  margin-top: 16px;
+}
+
+.sub {
+  font-size: 12px;
+  margin-top: 6px;
+  opacity: 0.74;
+}
+
+.arrow {
+  position: absolute;
+  right: 15px;
+  bottom: 16px;
+  width: 28px;
+  height: 28px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  opacity: 0.65;
+  font-size: 13px;
+  text-decoration: none;
+  color: inherit;
+  transition: opacity 0.15s;
+}
+
+.arrow:hover {
+  opacity: 1;
+}
+
+/* Progress bar */
+.track {
+  height: 7px;
+  background: #e7ded3;
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.fill {
+  height: 100%;
+  border-radius: 99px;
+  transition: width 0.6s ease;
+}
+
+.rose { background: var(--d); }
+
+@media (max-width: 1100px) {
+  .insights {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 580px) {
+  .insights {
+    grid-template-columns: 1fr;
+  }
+}

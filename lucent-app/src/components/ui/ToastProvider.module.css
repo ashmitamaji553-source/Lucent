@@ -1,0 +1,22 @@
+.toast {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  background: var(--e);
+  color: #fff7ef;
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 13px;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: 0.25s;
+  z-index: 1000;
+  pointer-events: none;
+  max-width: 320px;
+  line-height: 1.4;
+}
+
+.show {
+  opacity: 1;
+  transform: none;
+}

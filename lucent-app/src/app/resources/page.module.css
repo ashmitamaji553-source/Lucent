@@ -1,0 +1,130 @@
+.page {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 36px 26px 40px;
+}
+
+.header {
+  margin-bottom: 28px;
+}
+
+.eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.17em;
+  color: #a14d55;
+  margin-bottom: 10px;
+}
+
+.heading {
+  font-family: var(--font-serif);
+  font-size: 42px;
+  font-weight: 400;
+  color: var(--e);
+  line-height: 1.1;
+  margin-bottom: 10px;
+}
+
+.desc {
+  font-size: 16px;
+  color: var(--m);
+  max-width: 560px;
+}
+
+.subjectGroup {
+  margin-bottom: 28px;
+}
+
+.subjectLabel {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--e);
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--l);
+}
+
+.resourceGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 12px;
+}
+
+.resource {
+  background: rgba(255, 253, 248, 0.76);
+  border: 1px solid var(--l);
+  border-radius: 12px;
+  padding: 16px;
+  text-decoration: none;
+  color: var(--e);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: box-shadow 0.15s, transform 0.12s;
+}
+
+.resource:hover {
+  box-shadow: 0 3px 14px rgba(62, 37, 33, 0.08);
+  transform: translateY(-1px);
+}
+
+.resourceHeader {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.typeIcon {
+  font-size: 13px;
+  color: var(--t);
+  width: 18px;
+}
+
+.type {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--m);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.highBadge {
+  margin-left: auto;
+  font-size: 9px;
+  font-weight: 700;
+  background: rgba(135, 155, 130, 0.18);
+  color: #4a6647;
+  border-radius: 99px;
+  padding: 2px 7px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.resourceTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--e);
+  line-height: 1.35;
+}
+
+.resourceFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+}
+
+.subject {
+  font-size: 11px;
+  color: var(--m);
+}
+
+.arrow {
+  font-size: 14px;
+  opacity: 0.5;
+}
+
+@media (max-width: 580px) {
+  .page { padding: 24px 14px 30px; }
+  .heading { font-size: 32px; }
+}
