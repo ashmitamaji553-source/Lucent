@@ -25,7 +25,7 @@ export class GeminiService {
 
   constructor() {
     this.apiKey = process.env.GEMINI_API_KEY || process.env.AI_API_KEY;
-    this.defaultModel = process.env.GEMINI_MODEL || process.env.AI_MODEL || 'gemini-2.5-flash';
+    this.defaultModel = process.env.GEMINI_MODEL || process.env.AI_MODEL || 'gemini-flash-latest';
 
     if (this.apiKey) {
       try {
@@ -150,11 +150,13 @@ Guidelines:
       };
     } catch (error: unknown) {
       console.error('Gemini generateContent error:', error);
-      // Attempt fallback model if 2.5 was attempted
-      if (this.defaultModel !== 'gemini-1.5-flash') {
+      // Attempt fallback model chain
+      const fallbackModels = ['gemini-3.5-flash', 'gemini-3.5-flash-lite'];
+      for (const fbModel of fallbackModels) {
+        if (fbModel === this.defaultModel) continue;
         try {
           const fallbackRes = await this.client.models.generateContent({
-            model: 'gemini-1.5-flash',
+            model: fbModel,
             contents: promptText,
             config: {
               systemInstruction,
@@ -162,17 +164,20 @@ Guidelines:
             },
           });
           const rawFallback = fallbackRes.text || '';
-          return {
-            reply: rawFallback.split('---SUGGESTIONS---')[0].trim(),
-            sources,
-            suggestedQuestions: [
-              `Can you walk through an example of this?`,
-              `What are the most common exam questions on this topic?`,
-            ],
-            modelUsed: 'gemini-1.5-flash',
-          };
+          if (rawFallback) {
+            return {
+              reply: rawFallback.split('---SUGGESTIONS---')[0].trim(),
+              sources,
+              suggestedQuestions: [
+                `Can you walk through an example of this?`,
+                `What are the most common exam questions on this topic?`,
+                `How does this connect to earlier curriculum concepts?`,
+              ],
+              modelUsed: fbModel,
+            };
+          }
         } catch (fbErr) {
-          console.error('Gemini fallback error:', fbErr);
+          console.warn(`Fallback ${fbModel} error:`, fbErr);
         }
       }
       return null;

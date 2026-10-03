@@ -325,6 +325,17 @@ export const resourceRepo = {
 export const tutorRepo = {
   getDefaultConversation(): TutorConversation {
     const data = db.read();
+    if (!data.tutorConversations || data.tutorConversations.length === 0) {
+      const defaultConv: TutorConversation = {
+        id: 'conv_default',
+        userId: data.users[0]?.id || 'user_1',
+        title: 'Study Session',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      data.tutorConversations = [defaultConv];
+      return defaultConv;
+    }
     return data.tutorConversations[0];
   },
   getMessages(conversationId: string): TutorMessage[] {
